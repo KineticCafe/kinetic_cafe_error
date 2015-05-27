@@ -1,0 +1,32 @@
+= kinetic_cafe_error
+
+code :: https://github.com/KineticCafe/kinetic_cafe_error/
+bugs :: https://github.com/KineticCafe/kinetic_cafe_error/issues
+continuous integration :: {<img src="https://travis-ci.org/KineticCafe/kinetic_cafe_error.png" />}[https://travis-ci.org/KineticCafe/kinetic_cafe_error]
+
+== Description
+
+kinetic_cafe_error provides an API-smart error base class and a DSL for
+defining errors. Under Rails, it also provides a controller concern
+(KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+
+for KineticCafe::Error types.
+
+== Synopsis
+
+  class MyErrorBase < KineticCafe::Error
+    extend KineticCafe::ErrorDSL
+  
+    not_found class: :user # => MyErrorBase::UserNotFound
+    unauthorized class: :user # => MyErrorBase::UserUnauthorized
+    forbidden class: :user # => MyErrorBase::UserForbidden
+    conflict class: :user# => MyErrorBase::UserConflict
+  end
+
+== Install
+
+Add kinetic_cafe_error to your gemfile:
+
+  gem 'kinetic_cafe_error', '~> 1.0'
+
+:include: Contributing.rdoc
+:include: Licence.rdoc

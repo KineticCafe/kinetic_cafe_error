@@ -1,0 +1,21 @@
+en-UK:
+  kinetic_cafe_error:
+    page:
+      title: >-
+        An error occurred.
+      body_html: |
+        <p>The person responsible has been informed.</p>
+        <p>I’m not allowed to say anything else.</p>
+        <p>…</p>
+        <p>OK. Just for you, here’s a bit more:</p>
+      error_table_html: |
+        <table>
+          <tbody>
+            <tr>
+              <th>Status</th><td>&nbsp;</td><td>%{status}</td>
+            </tr>
+            <tr>
+              <th>Code</th><td>&nbsp;</td><td>%{code}</td>
+            </tr>
+          </tbody>
+        </table>
