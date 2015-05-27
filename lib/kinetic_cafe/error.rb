@@ -25,7 +25,7 @@ module KineticCafe #:nodoc:
   # rescue clause and handled there, as is shown in the included
   # KineticCafe::ErrorHandler controller concern for Rails.
   class Error < ::StandardError
-    VERSION = '1.0' # :nodoc:
+    VERSION = '1.0.1' # :nodoc:
 
     # The HTTP status to be returned. If not provided in the constructor, uses
     # #default_status.
