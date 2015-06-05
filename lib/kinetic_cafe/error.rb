@@ -25,7 +25,7 @@ module KineticCafe #:nodoc:
   # rescue clause and handled there, as is shown in the included
   # KineticCafe::ErrorHandler controller concern for Rails.
   class Error < ::StandardError
-    VERSION = '1.0.1' # :nodoc:
+    VERSION = '1.1' # :nodoc:
 
     # The HTTP status to be returned. If not provided in the constructor, uses
     # #default_status.
@@ -101,6 +101,7 @@ module KineticCafe #:nodoc:
     def i18n_key
       @i18n_key ||= "#{self.class.i18n_key_base}.#{name}".freeze
     end
+    alias_method :code, :i18n_key
 
     # Indicates that this error should *not* have its details rendered to the
     # user, but should use the +head+ method.

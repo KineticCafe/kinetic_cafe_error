@@ -31,11 +31,11 @@ module KineticCafe::ErrorHandler
     end
   end
 
-  # Render the +error+ as HTML. Uses the template +kinetic_cafe/error/page+
+  # Render the +error+ as HTML. Uses the template +kinetic_cafe_error/page+
   # with +error+ passed as a local of the same name. The render status is set
   # to <tt>error.status</tt>.
   def kinetic_cafe_error_render_html(error)
-    render template: 'kinetic_cafe/error/page', locals: { error: error },
+    render template: 'kinetic_cafe_error/page', locals: { error: error },
       status: error.status
   end
 

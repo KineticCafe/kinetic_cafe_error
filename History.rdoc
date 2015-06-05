@@ -1,7 +1,34 @@
+=== 1.1 / 2015-06-05
+
+* 7 minor enhancements
+
+  * Added Minitest assertions and expectations.
+  * Added Rspec expectation matchers.
+  * Changed the error table to be a partial and renamed keys to support this
+    change (kinetic_cafe_error/_table.html.*). Removed the previous key. Now
+    an error is nominally embeddable in your own views without being a full
+    page.
+  * Added HAML templates.
+  * Added Slim templates.
+  * Move error page to kinetic_cafe_error/page.html.* instead of
+    kinetic_cafe/error/page.html.*. This could be a breaking change, but I
+    consider it low risk.
+  * Added KineticCafe::Error#code as an alias for KineticCafe::Error#i18n_key.
+
+* 2 minor bugfixes:
+
+  * The en and fr translation files were reporting en-CA and fr-CA as their
+    locales, which is incorrect.
+
+  * Renamed locale files to better match their names to their locales. The
+    locale is not en_ca, but en-CA.
+
 === 1.0.1 / 2015-05-27
 
-* Bugfix: Mac OS X is not case-sensitive and I do not currently have Rails
-  tests.
+* 1 minor bugfix
+
+  * Mac OS X is not case-sensitive and I do not currently have Rails-specific
+    tests.
 
 === 1.0.0 / 2015-05-27
 

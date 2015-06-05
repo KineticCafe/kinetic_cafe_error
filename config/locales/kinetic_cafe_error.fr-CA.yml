@@ -8,14 +8,7 @@ fr-CA:
         <p>Je ne suis pas autorisé à dire quoi que ce soit d’autre à ce sujet.</p>
         <p>…</p>
         <p>D’ACCORD. Juste pour vous, voici un peu plus:</p>
-      error_table_html: |
-        <table>
-          <tbody>
-            <tr>
-              <th>Condition</th><td>&nbsp;</td><td>%{status}</td>
-            </tr>
-            <tr>
-              <th>Code</th><td>&nbsp;</td><td>%{code}</td>
-            </tr>
-          </tbody>
-        </table>
+    table:
+      header:
+        status: Condition
+        code: Code

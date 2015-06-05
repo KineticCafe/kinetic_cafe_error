@@ -1,8 +1,0 @@
-<h2><%= t('kinetic_cafe_error.page.title') %></h2>
-
-<% unless error.header_only? || error.internal? -%>
-  <blockquote><%= error.i18n_message %></blockquote>
-<% end -%>
-<%= t('kinetic_cafe_error.page.body_html') %>
-<%= t('kinetic_cafe_error.page.error_table_html',
-      status: error.status, code: error.i18n_key) -%>

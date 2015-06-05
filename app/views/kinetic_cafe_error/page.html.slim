@@ -1,0 +1,8 @@
+h2= I18n.t('kinetic_cafe_error.page.title')
+
+- unless error.header_only? || error.internal?
+  blockquote= error.i18n_message
+
+== I18n.t('kinetic_cafe_error.page.body_html')
+
+= render partial: 'kinetic_cafe_error/table', locals: { error: error }
