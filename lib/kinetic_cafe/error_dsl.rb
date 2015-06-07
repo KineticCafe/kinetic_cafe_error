@@ -66,22 +66,26 @@ module KineticCafe
     #              define_error class: :object, status: :not_found
     #
     #            will create an +ObjectNotFound+ error class.
-    #
-    # +header_only+:: Indicates that when this is caught, it should not be
-    #                 returned with full details, but shoudl instead be treated
-    #                 as a header-only API response.
+    # +header+:: Indicates that when this is caught, it should not be returned
+    #            with full details, but should instead be treated as a
+    #            header-only API response. Also available as +header_only+.
+    # +internal+:: Generates a response that indicates to clients that the
+    #              error should not be shown to users.
+    # +i18n_params+:: An array of parameter names that are expected to be
+    #                 provided for translation. This helps document the
+    #                 expected translations.
     def define_error(options)
       fail ArgumentError, 'invalid options' unless options.kind_of?(Hash)
       fail ArgumentError, 'define what error?' if options.empty?
 
       options = options.dup
+      status = options[:status]
 
       klass = options.delete(:class)
       if klass
         if options.key?(:key)
           fail ArgumentError, ":key conflicts with class:#{klass}"
         end
-        status = options[:status]
 
         key = if status.kind_of?(Symbol) or status.kind_of?(String)
                 "#{klass}_#{KineticCafe::ErrorDSL.namify(status)}"
@@ -89,8 +93,7 @@ module KineticCafe
                 "#{klass}_#{KineticCafe::ErrorDSL.namify(self.name)}"
               end
       else
-        status = options[:status]
-        key    = options.fetch(:key) {
+        key = options.fetch(:key) {
           fail ArgumentError, 'one of :key or :class must be provided'
         }.to_s
       end
@@ -116,13 +119,19 @@ module KineticCafe
       error = Class.new(self)
       error.send :define_method, :name, -> { key }
       error.send :define_method, :i18n_key, -> { i18n_key }
+      error.send :define_singleton_method, :i18n_key, -> { i18n_key }
 
-      if options[:header_only]
-        error.send :define_method, :header_only?, -> { true }
+      if options[:header] || options[:header_only]
+        error.send :define_method, :header?, -> { true }
+        error.send :alias_method, :header_only?, :header?
       end
 
-      if options[:internal]
-        error.send :define_method, :internal?, -> { true }
+      error.send :define_method, :internal?, -> { true } if options[:internal]
+
+      i18n_params = options[:i18n_params]
+      if i18n_params || !error.respond_to?(:i18n_params)
+        i18n_params = Array(i18n_params).freeze
+        error.send :define_singleton_method, :i18n_params, -> { i18n_params }
       end
 
       status ||= defined?(Rack::Utils) && :bad_request || 400
@@ -133,10 +142,6 @@ module KineticCafe
 
       const_set(error_name, error)
     end
-
-    ##
-    # 
-
 
     private
 
@@ -151,13 +156,28 @@ module KineticCafe
         fail "#{self} cannot extend #{base} (not a StandardError)"
       end
 
-      if defined?(Rack::Utils)
+      rack_status = base.__rack_status if base.respond_to?(:__rack_status)
+
+      case rack_status
+      when Hash
+        rack_status = { methods: true, errors: true }.merge(rack_status)
+      when true, nil
+        rack_status = {}.freeze
+      when false
+        rack_status = { methods: false, errors: false }.freeze
+      end
+
+      if defined?(Rack::Utils) && rack_status
         Rack::Utils::SYMBOL_TO_STATUS_CODE.each do |name, value|
-          base.singleton_class.send :define_method, name do |options = {}|
-            define_error(options.merge(status: name))
+          if rack_status.fetch(:methods, true)
+            base.singleton_class.send :define_method, name do |options = {}|
+              define_error(options.merge(status: name))
+            end
           end
 
-          base.send :define_error, status: name, key: name
+          if rack_status.fetch(:errors, true)
+            base.send :define_error, status: name, key: name
+          end
         end
       end
     end

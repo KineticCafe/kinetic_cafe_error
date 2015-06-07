@@ -12,3 +12,5 @@ fr:
       header:
         status: Condition
         code: Code
+    cause: >-
+      ^-- causé par: %{message}

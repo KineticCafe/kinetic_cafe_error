@@ -2,8 +2,9 @@
 
 gem 'minitest'
 require 'minitest/autorun'
-require 'minitest/stub_const'
+require 'minitest/focus'
 require 'minitest/moar'
+require 'minitest/stub_const'
 require 'rack/test'
 require 'kinetic_cafe_error'
 

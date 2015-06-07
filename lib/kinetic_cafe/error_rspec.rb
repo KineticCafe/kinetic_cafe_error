@@ -12,6 +12,14 @@ module KineticCafe
   # +be_json_for+:: Verifies that the expected value is a JSON representation
   #                 of the actual value. If the actual value responds to
   #                 #body, the actual value is replaced with +actual.body+.
+  #
+  # +be_kc_error+:: Verifies that the expected value is a KineticCafe::Error.
+  #
+  # +be_kc_error_json+:: Verifies that the JSON value matches the output of
+  #                      KineticCafe::Error.
+  #
+  # +be_kc_error_html+:: Verifies that the rendered HTML matches the output of
+  #                      KineticCafe::Error.
   module ErrorRspec
     extend ::Rspec::Matchers::DSL
 
@@ -30,6 +38,7 @@ module KineticCafe
 
     matcher :be_kc_error do |expected, params = {}|
       match do |actual|
+        expect(actual).to be_kind_of(KineticCafe::ErrorModule)
         expect(actual).to be_kind_of(expected)
         expect(actual).to eq(expected.new(params))
       end
@@ -44,6 +53,14 @@ module KineticCafe
       end
 
       diffable
+    end
+
+    matcher :be_kc_error_html do |expected, params = {}|
+      match do |actual|
+        expect(actual).to render_template('kinetic_cafe_error/page')
+        expect(actual).to render_template('kinetic_cafe_error/_table')
+        expect(actual).to include(expected.i18n_key)
+      end
     end
   end
 end

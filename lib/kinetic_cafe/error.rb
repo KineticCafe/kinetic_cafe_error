@@ -1,4 +1,6 @@
-module KineticCafe #:nodoc:
+require_relative 'error_module'
+
+module KineticCafe # :nodoc:
   # A subclass of StandardError that can render itself as a descriptive JSON
   # hash, or as a hash that can be passed to a Rails controller +render+
   # method.
@@ -9,12 +11,10 @@ module KineticCafe #:nodoc:
   #
   # == Defining an Error Hierarchy
   #
-  # An error hierarchy is defined by subclassing KineticCafe::Error, extending
-  # it with KineticCafe::ErrorDSL, and defining error subclasses with the DSL.
+  # An error hierarchy is defined by using KineticCafe::Error.hierarchy and
+  # defining error subclasses with the DSL.
   #
-  #   class MyErrorBase < KineticCafe::Error
-  #     extend KineticCafe::ErrorDSL
-  #
+  #   KineticCafe::Error.hierarchy(class: :MyErrorBase) do
   #     not_found class: :user # => MyErrorBase::UserNotFound
   #     unauthorized class: :user # => MyErrorBase::UserUnauthorized
   #     forbidden class: :user # => MyErrorBase::UserForbidden
@@ -25,147 +25,148 @@ module KineticCafe #:nodoc:
   # rescue clause and handled there, as is shown in the included
   # KineticCafe::ErrorHandler controller concern for Rails.
   class Error < ::StandardError
-    VERSION = '1.1' # :nodoc:
+    VERSION = '1.2' # :nodoc:
 
-    # The HTTP status to be returned. If not provided in the constructor, uses
-    # #default_status.
-    attr_reader :status
-    # Extra data relevant to recipients of the exception, provided on
-    # construction.
-    attr_reader :extra
-    # The exception that caused this exception; provided on construction.
-    attr_reader :cause
+    # Get the KineticCafe::Error functionality.
+    include KineticCafe::ErrorModule
 
-    # Create a new error with the given parameters.
+    # Create an error hierarchy using +options+ and the optional +block+. When
+    # given, the +block+ will either +yield+ the hierarchy base (if the block
+    # accepts arguments) or run with +instance_eval+.
+    #
+    # If the class does not already include KineticCafe::ErrorModule, it will
+    # be included.
+    #
+    # === Building a Hierarchy
+    #
+    # A hierarchy using KineticCafe::Error as its base can be created with
+    # KineticCafe::Error.hierarchy and no arguments.
+    #
+    #   KineticCafe::Error.hierarchy do
+    #     not_found class: :user # => KineticCafe::Error::UserNotFound
+    #   end
+    #
+    # A hierarchy in a new error class (that descends from KineticCafe::Error)
+    # can be created by providing a class name:
+    #
+    #   KineticCafe::Error.hierarchy(class: :MyErrorBase) do
+    #     not_found class: :user # => MyErrorBase::UserNotFound
+    #   end
+    #
+    # The new error class can itself be in a namespace, but the parent
+    # namespace must be identified:
+    #
+    #   module My; end
+    #
+    #   KineticCafe::Error.hierarchy(class: :ErrorBase, namespace: My) do
+    #     not_found class: :user # => My::ErrorBase::UserNotFound
+    #   end
+    #
+    # It is also possible to use an explicit descendant easily:
+    #
+    #   module My
+    #     ErrorBase = Class.new(KineticCafe::Error)
+    #   end
+    #
+    #   KineticCafe::Error.hierarchy(class: My::ErrorBase) do
+    #     not_found class: :user # => My::ErrorBase::UserNotFound
+    #   end
+    #
+    # === Rack::Utils Errors and Helpers
+    #
+    # By default, when Rack::Utils is present, KineticCafe::Error will present
+    # helper methods and default HTTP status code errors.
+    #
+    #   KineticCafe::Error.hierarchy do
+    #     not_found class: :user # => KineticCafe::Error::UserNotFound
+    #   end
+    #
+    #   KineticCafe::Error::UserNotFound.new.status # => :not_found / 404
+    #   KineticCafe::Error::NotFound.new.status #  => :not_found
+    #
+    # These may be controlled with the option +rack_status+. If provided as
+    # +false+, neither will be created:
+    #
+    #   KineticCafe::Error.hierarchy(rack_status: false) do
+    #     not_found class: :user # => raises NoMethodError
+    #   end
+    #
+    #   fail KineticCafe::Error::NotFound # => raises NameError
+    #
+    # These may be controlled individually, as well. Disable the methods:
+    #
+    #   KineticCafe::Error.hierarchy(rack_status: { methods: false }) do
+    #     not_found class: :user # => raises NoMethodError
+    #   end
+    #
+    #   fail KineticCafe::Error::NotFound # => works
+    #
+    # Disable the default error classes:
+    #
+    #   KineticCafe::Error.hierarchy(rack_status: { errors: false }) do
+    #     not_found class: :user # => KineticCafe::Error::UserNotFound
+    #   end
+    #
+    #   fail KineticCafe::Error::NotFound # => raises NoMethodError
     #
     # === Options
     #
-    # +message+:: A message override. This may be provided either as the first
-    #             parameter to the constructor or may be provided as an option.
-    #             A value provided as the first parameter overrides any other
-    #             value.
-    # +status+::  An override to the HTTP status code to be returned by this
-    #             error by default.
-    # +i18n_params+:: The parameters to be sent to I18n.translate with the
-    #                 #i18n_key.
-    # +cause+:: The exception that caused this error. Used to wrap an earlier
-    #           exception.
-    # +extra+:: Extra data to be returned in the API representation of this
-    #           exception.
-    # +query+:: A hash of parameters, typically from Rails controller +params+
-    #           or model +where+ query. This hash will be converted into a
-    #           string value similar to ActiveSupport#to_query.
-    #
-    # Any unmatched options will be added transparently to +i18n_params+.
-    # Because of this, the following constructors are identical:
-    #
-    #     KineticCafe::Error.new(i18n_params: { x: 1 })
-    #     KineticCafe::Error.new(x: 1)
-    #
-    # :call-seq:
-    #    new(message, options = {})
-    #    new(options)
-    def initialize(*args)
-      options = args.last.kind_of?(Hash) ? args.pop.dup : {}
-      @message = args.shift
-      @message = options.delete(:message) if @message.nil? || @message.empty?
-      options.delete(:message)
+    # +class+:: If given, identifies the base class and host namespace of the
+    #           error hierarchy. Provided as a class, that class is used.
+    #           Provided as a symbol, creates a new class that descends from
+    #           KineticCafe::Error.
+    # +namespace+:: If +class+ is provided as a symbol, this namespace will be
+    #               the one where the new error class is created.
+    # +rack_status+:: Controls the creation of error-definition helper methods
+    #                 and errors based on Rack::Utils status codes (e.g.,
+    #                 +not_found+). +true+ creates both; +false+ disables both.
+    #                 The values <tt>{ methods: false }</tt> and <tt>{ errors:
+    #                 false }</tt> individually control one.
+    def self.hierarchy(options = {}, &block) # :yields base:
+      base = options.fetch(:class, self)
 
-      @message && @message.freeze
+      if base.kind_of?(Symbol)
+        ns = options.fetch(:namespace, Object)
+        base = if ns.const_defined?(base)
+                 ns.const_get(base)
+               else
+                 ns.const_set(base, Class.new(self))
+               end
+      end
 
-      @status      = options.delete(:status) || default_status
-      @i18n_params = options.delete(:i18n_params) || {}
-      @extra       = options.delete(:extra)
-      @cause       = options.delete(:cause)
+      if base.singleton_class < KineticCafe::ErrorDSL
+        fail "#{base} is already a root hierarchy"
+      end
 
-      @i18n_params.update(cause: cause.message) if cause
+      unless base <= ::StandardError
+        fail "#{base} cannot root a hierarchy (not a StandardError)"
+      end
 
-      query = options.delete(:query)
-      @i18n_params.merge!(query: stringify(query)) if query
-      @i18n_params.merge!(options)
-      @i18n_params.freeze
-    end
+      unless base <= KineticCafe::ErrorModule
+        base.send(:include, KineticCafe::ErrorModule)
+      end
 
-    # The message associated with this exception. If not provided, defaults to
-    # #i18n_message.
-    def message
-      @message || i18n_message
-    end
+      unless rs_defined = base.respond_to?(:__rack_status)
+        base.send :define_singleton_method, :__rack_status do
+          options.fetch(:rack_status, { errors: true, methods: true })
+        end
+      end
 
-    # The name of the error class.
-    def name
-      @name ||= KineticCafe::ErrorDSL.namify(self.class.name)
-    end
+      base.send(:extend, KineticCafe::ErrorDSL)
 
-    # The key used for I18n translation.
-    def i18n_key
-      @i18n_key ||= "#{self.class.i18n_key_base}.#{name}".freeze
-    end
-    alias_method :code, :i18n_key
+      if block_given?
+        if block.arity > 0
+          yield base
+        else
+          base.instance_eval(&block)
+        end
+      end
 
-    # Indicates that this error should *not* have its details rendered to the
-    # user, but should use the +head+ method.
-    def header_only?
-      false
-    end
-
-    # Indicates that this error should be rendered to the client, but clients
-    # are advised *not* to display the message to the user.
-    def internal?
-      false
-    end
-
-    # The I18n translation of the message. If I18n.translate is defined,
-    # returns #i18n_key and the I18n parameters.
-    def i18n_message
-      @i18n_message ||= if defined?(I18n.translate)
-                          I18n.translate(i18n_key, @i18n_params).freeze
-                        else
-                          [ i18n_key, @i18n_params ].freeze
-                        end
-    end
-
-    # The details of this error as a hash. Values that are empty or nil are
-    # omitted.
-    def api_error(*)
-      {
-        message:      @message,
-        status:       status,
-        name:         name,
-        internal:     internal?,
-        i18n_message: i18n_message,
-        i18n_key:     i18n_key,
-        i18n_params:  @i18n_params,
-        cause:        cause && cause.message,
-        extra:        extra
-      }.delete_if { |_, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
-    end
-    alias_method :as_json, :api_error
-
-    # An error result that can be passed as a response body.
-    def error_result
-      { error: api_error, message: message }
-    end
-
-    # A hash that can be passed to the Rails +render+ method with +status+ of
-    # #status and +layout+ false. The +json+ field is rendered as a hash of
-    # +error+ (calling #api_error) and +message+ (calling #message).
-    def json_result
-      { status: status, json: error_result, layout: false }
-    end
-    alias_method :render_json_for_rails, :json_result
-
-    # Nice debugging version of a KineticCafe::Error
-    def inspect
-      "#<#{self.class}: name=#{name} status=#{status} " \
-        "message=#{message.inspect} i18n_key=#{i18n_key} " \
-        "i18n_params=#{@i18n_params.inspect} extra=#{extra.inspect} " \
-        "cause=#{cause}>"
-    end
-
-    # The base for I18n key resolution.
-    def self.i18n_key_base
-      'kcerrors'.freeze
+      base
+    ensure
+      if base.respond_to?(:__rack_status) && !rs_defined
+        base.singleton_class.send :undef_method, :__rack_status
+      end
     end
 
     private

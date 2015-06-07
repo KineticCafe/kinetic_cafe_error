@@ -1,3 +1,36 @@
+=== 1.2 / 2015-06-08
+
+* 1 major enhancement
+
+  * Changed the preferred way of creating an error hierarchy from just
+    extending the error class with KineticCafe::ErrorDSL to calling
+    KineticCafe.create_hierarchy. Among other options this provides, the
+    automatic creation of helper methods and errors based on Rack::Utils status
+    codes can be controlled.
+
+* 5 minor enhancements
+
+  * Renamed KineticCafe#header_only? to KineticCafe#header? The old version is
+    still present but deprecated. Similarly, the option to
+    KineticCafe::ErrorDSL#define_error is now called +header+, but
+    +header_only+ also works.
+
+  * Added an option, +i18n_params+ to KineticCafe::ErrorDSL#define_error, used
+    to describe the I18n parameters that are expected to be provided to the
+    error for translations. This gets defined as a class method on the new
+    error. This should be passed as an array.
+
+  * Extracted most of the 'magic' functionality to KineticCafe::ErrorModule so
+    that useful hierarchies can be generated without inheriting directly from
+    KineticCafe::Error.
+
+  * Added a class method to the Rails controller concern to generate a new
+    rescue_from for a non-KineticCafe::Error-derived exception.
+
+  * Added a pair of rake tasks, kcerror:defined (shows defined errors) and
+    kcerror:translations (generates a sample translation key file).
+    Automatically inserted for Rails applications.
+
 === 1.1 / 2015-06-05
 
 * 7 minor enhancements

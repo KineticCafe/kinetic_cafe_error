@@ -26,8 +26,11 @@ lib/kinetic_cafe/error.rb
 lib/kinetic_cafe/error/minitest.rb
 lib/kinetic_cafe/error_dsl.rb
 lib/kinetic_cafe/error_engine.rb
+lib/kinetic_cafe/error_module.rb
 lib/kinetic_cafe/error_rspec.rb
+lib/kinetic_cafe/error_tasks.rake
 lib/kinetic_cafe_error.rb
 test/test_helper.rb
 test/test_kinetic_cafe_error.rb
 test/test_kinetic_cafe_error_dsl.rb
+test/test_kinetic_cafe_error_hierarchy.rb

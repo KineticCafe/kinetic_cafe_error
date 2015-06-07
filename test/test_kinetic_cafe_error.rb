@@ -66,16 +66,35 @@ describe KineticCafe::Error do
     end
 
     it 'encodes the :query parameter specially for I18n parameters' do
-      exception = KineticCafe::Error.new(query: { a: 1, b: %w(x y z )})
+      query = {
+        a: 1,
+        b: %w(x y z),
+        c: [ d: 1, e: 2 ],
+        f: []
+      }
+
+      exception = KineticCafe::Error.new(query: query)
       Object.stub_remove_const(:I18n) do
         assert_equal(
           [
             'kcerrors.error',
-            { query: "a: 1; b[]: x, b[]: y, b[]: z" }
+            { query: "a: 1; b[]: x, b[]: y, b[]: z; c[][d]: 1; c[][e]: 2; f[]: []" }
           ],
           exception.i18n_message
         )
       end
+    end
+
+    it 'is not #header? by default' do
+      refute exception.header?
+    end
+
+    it 'is not #internal? by default' do
+      refute exception.internal?
+    end
+
+    it 'has no I18n parameters by default' do
+      assert_empty KineticCafe::Error.i18n_params
     end
   end
 end
