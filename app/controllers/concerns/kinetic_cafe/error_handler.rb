@@ -7,7 +7,16 @@ module KineticCafe::ErrorHandler
   extend ActiveSupport::Concern
 
   included do
-    rescue_from KineticCafe::Error, with: :kinetic_cafe_error_handler
+    kinetic_cafe_error_handler_for KineticCafe::Error
+  end
+
+  module ClassMethods
+    # Create a new +rescue_from+ handler for the specified base class. Useful
+    # if the base is not a descendant of KineticCafe::Error, but includes
+    # KineticCafe::ErrorHandler.
+    def kinetic_cafe_error_handler_for(klass)
+      rescue_from klass, with: :kinetic_cafe_error_handler
+    end
   end
 
   # This method is called with +error+ when Rails catches a KineticCafe::Error
@@ -19,7 +28,9 @@ module KineticCafe::ErrorHandler
   # controllers for different behaviour.
   def kinetic_cafe_error_handler(error)
     Rails.logger.error(error.message)
-    Rails.logger.error("^-- caused by: #{error.cause.message}") if error.cause
+    if error.cause
+      Rails.logger.error(t('kinetic_cafe_error.cause', error.cause.message))
+    end
 
     respond_to do |format|
       format.html do

@@ -9,24 +9,111 @@ continuous integration :: {<img src="https://travis-ci.org/KineticCafe/kinetic_c
 kinetic_cafe_error provides an API-smart error base class and a DSL for
 defining errors. Under Rails, it also provides a controller concern
 (KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+
-for KineticCafe::Error types.
+to handle KineticCafe::Error types.
+
+Exceptions in a hierarchy can be handled in a uniform manner, including getting
+an I18n translation message with parameters, standard status values, and
+meaningful JSON representations that can be used to establish a standard error
+representations across both clients and servers.
 
 == Synopsis
 
-  class MyErrorBase < KineticCafe::Error
-    extend KineticCafe::ErrorDSL
-  
-    not_found class: :user # => MyErrorBase::UserNotFound
-    unauthorized class: :user # => MyErrorBase::UserUnauthorized
-    forbidden class: :user # => MyErrorBase::UserForbidden
-    conflict class: :user# => MyErrorBase::UserConflict
+Define a hierarchy with KineticCafe::Error.hierarchy.
+
+  KineticCafe::Error.hierarchy class: :MyBaseError do
+    not_found class: :user # => MyBaseError::UserNotFound
+    unauthorized class: :user # => MyBaseError::UserUnauthorized
+    forbidden class: :user # => MyBaseError::UserForbidden
+    conflict class: :user# => MyBaseError::UserConflict
   end
+
+There are a few documented ways to define hierarchies. Examples for handling
+exceptions can be found in the provided Minitest assertions module and the
+RSpec matchers.
+
+=== Using with Rails
+
+When using KineticCafe::Error with Rails, KineticCafe::ErrorEngine is
+automatically injected, which enables the following functionality:
+
+* Two rake tasks:
+
+  * <tt>rake kcerror:defined</tt>, showing the errors defined in the known
+    hierarchy.
+
+  * <tt>rake kcerror:translations[output]</tt>, creating a template translation
+    file for all defined errors.
+
+* An error view, <tt>kinetic_cafe_error/page</tt>, in ERB, HAML, and Slim
+  formats. This also has a partial, <tt>kinetic_cafe_error/_table</tt>. This
+  allows KineticCafe::Error classes to be used in HTML contexts as well as JSON
+  contexts.
+
+* Access to the kinetic_cafe_error translation files for English and French,
+  used in logging and in the error view.
+
+* A controller concern, KineticCafe::ErrorHandler, that defines a +rescue_from+
+  handler for descendants of the KineticCafe::Error class, and a error handler
+  generator, #kinetic_cafe_error_handler_for, that sets a +rescue_from+ handler
+  for a KineticCafe::Error hierarchy that does not descend from
+  KineticCafe::Error itself.
+
+  #kinetic_cafe_error_handler distinguishes between HTML and JSON contexts.
+
+=== Using with Minitest
+
+KineticCafe::Error provides a number of assertions that can help testing that
+your code returns KineticCafe::Error hierarchies.
+
+* #assert_kc_error when used with the return value of +assert_raises+, verifies
+  that the captured exception is the expected exception, including parameters.
+  Also available as #must_be_kc_error.
+
+* assert_kc_error_json when used with a response body, verifies that the
+  response is the same as would be generated with the requested error class.
+  Also available as #must_be_kc_error_json.
+
+* assert_response_kc_error_html works with ActiveSupport::Test; it asserts that
+  the +kinetic_cafe_error/page+ template has been rendered and that the
+  expected class I18n key is part of the response body. Depends on
+  <tt>@response.body</tt> being part of the available test environment.
+
+* assert_response_kc_Error works with ActiveSupport::Test and checks
+  <tt>@request.format</tt> to determine whether to forward to
+  #assert_response_kc_error_html or #assert_kc_error_json.
+
+Get access to these with:
+
+  require 'kinetic_cafe/error/minitest'
+
+In your test setup code.
+
+=== Using with RSpec (Experimental)
+
+KineticCafe::Error provides four experimental matchers:
+
+* +be_json_for+ verifies that the JSON in the +actual+ string or body match the
+  +expected+ data structure.
+* +be_kc_error+ verifies that the error is the expected class and renders
+  properly with the same parameters.
+* +be_kc_error_json+ verifies that the JSON provided that the JSON output of the
+  +expected+ is generates the same JSON.
+* +be_kc_error_html+ verifies that the response renders the
+  +kinetic_cafe_error/page+ template.
 
 == Install
 
-Add kinetic_cafe_error to your gemfile:
+Add kinetic_cafe_error to your Gemfile:
 
-  gem 'kinetic_cafe_error', '~> 1.0'
+  gem 'kinetic_cafe_error', '~> 1.2'
+
+If not using Rails, install with RubyGems:
+
+  gem install kinetic_cafe_error
+
+And require where needed in your application:
+
+  require 'kinetic_cafe_error'
 
 :include: Contributing.rdoc
 :include: Licence.rdoc

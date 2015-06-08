@@ -12,3 +12,5 @@ en-UK:
       header:
         status: Status
         code: Code
+    cause: >-
+      ^-- caused by: %{message}

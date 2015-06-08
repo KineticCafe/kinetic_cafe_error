@@ -197,8 +197,15 @@ describe KineticCafe::ErrorDSL do
         end
       end
 
-      it 'defines #header_only? if requested' do
-        child = base.define_error key: :foo, header_only: true
+      it 'defines #header? if requested' do
+        child = base.define_error key: :foo, header: true
+        assert child.new.header?
+        assert child.new.header_only?
+      end
+
+      it 'still recognizes #header_only? requests' do
+        child = base.define_error key: :bar, header_only: true
+        assert child.new.header?
         assert child.new.header_only?
       end
 
@@ -212,6 +219,80 @@ describe KineticCafe::ErrorDSL do
         base.define_error class: :bar, status: :missing
         assert base.const_defined?(:BarMissing)
         assert base::BarMissing < base
+      end
+
+      it 'has no I18n parameters by default' do
+        child = base.define_error key: :foo
+        assert_equal [], child.i18n_params
+      end
+    end
+  end
+
+  describe 'when Rack::Utils is defined' do
+    it 'defines .not_found by default' do
+      base = Class.new(StandardError) do
+        extend KineticCafe::ErrorDSL
+      end
+      assert base.respond_to?(:not_found)
+
+      child = base.not_found class: :child
+      assert_equal :not_found, child.new.send(:default_status)
+    end
+
+    it 'defines NotFound by default' do
+      base = Class.new(StandardError) do
+        extend KineticCafe::ErrorDSL
+      end
+      assert base.const_defined?(:NotFound)
+    end
+
+    it 'respects the method __rack_status if defined' do
+      base = Class.new(StandardError) do
+        def self.__rack_status
+          { methods: true, errors: false }
+        end
+
+        extend KineticCafe::ErrorDSL
+      end
+
+      assert base.respond_to?(:not_found)
+      refute base.const_defined?(:NotFound)
+    end
+  end
+
+  describe 'when Rack::Utils is not defined' do
+    it 'does not define .not_found' do
+      Rack.stub_remove_const(:Utils) do
+        base = Class.new(StandardError) do
+          extend KineticCafe::ErrorDSL
+        end
+
+        refute base.respond_to?(:not_found)
+      end
+    end
+
+    it 'does not define NotFound' do
+      Rack.stub_remove_const(:Utils) do
+        base = Class.new(StandardError) do
+          extend KineticCafe::ErrorDSL
+        end
+
+        refute base.const_defined?(:NotFound)
+      end
+    end
+
+    it 'ignores __rack_status if defined' do
+      Rack.stub_remove_const(:Utils) do
+        base = Class.new(StandardError) do
+          def self.__rack_status
+            { methods: true, errors: false }
+          end
+
+          extend KineticCafe::ErrorDSL
+        end
+
+        refute base.respond_to?(:not_found)
+        refute base.const_defined?(:NotFound)
       end
     end
   end

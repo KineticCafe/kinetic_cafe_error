@@ -7,6 +7,9 @@ module Minitest #:nodoc:
     def assert_kc_error expected, actual, params = {}, msg = nil
       msg, params = params, {} if msg.nil? && params.kind_of?(String)
 
+      assert_kind_of KineticCafe::ErrorDSL, actual,
+        msg || "Expected #{actual} to be #{expected}, but it was not."
+
       assert_kind_of expected, actual,
         msg || "Expected #{actual} to be #{expected}, but it was not."
 
@@ -34,14 +37,36 @@ module Minitest #:nodoc:
     end
 
     # Assert that a reponse body (<tt>@response.body</tt>, useful from
-    # ActionController::TestCase) is JSON for the expected error. This is a
+    # ActionController::TestCase) is HTML for the expected error.
     # convenience wrapper around #assert_kc_error_json.
+    def assert_response_kc_error_html expected, params = {}, msg = nil
+      msg, params = params, {} if msg.nil? && params.kind_of?(String)
+
+      msg ||= "Expected #{actual} to be HTML for #{expected}, but it was not."
+
+      assert_template 'kinetic_cafe_error/page', msg
+      assert_template 'kinetic_cafe_error/_table', msg
+
+      assert_match(/#{expected.i18n_key}/, @response.body, msg)
+      assert_response expected.new.status, msg
+    end
+
+    # Assert that a reponse body (<tt>@response.body</tt>, useful from
+    # ActionController::TestCase) is JSON for the expected error. This is a
+    # convenience wrapper around #assert_kc_error_json or
+    # #assert_kc_error_html, depending on whether or not the response is HTML
+    # or not.
     def assert_response_kc_error expected, params = {}, msg = nil
       if msg.nil? && params.kind_of?(String)
         msg, params = params, {}
       end
       msg ||= "Expected response to be #{expected}, but was not."
-      assert_kc_error_json expected, @response.body, params, msg
+
+      if @request.format.html?
+        assert_response_kc_error_html expected, params, msg
+      else
+        assert_kc_error_json expected, @response.body, params, msg
+      end
     end
 
     Minitest::Test.send(:include, self)

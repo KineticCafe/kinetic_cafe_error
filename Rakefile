@@ -64,4 +64,6 @@ namespace :test do
   end
 end
 
+load 'lib/kinetic_cafe/error_tasks.rake'
+
 # vim: syntax=ruby

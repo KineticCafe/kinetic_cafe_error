@@ -1,18 +1,18 @@
 # -*- encoding: utf-8 -*-
-# stub: kinetic_cafe_error 1.1 ruby lib
+# stub: kinetic_cafe_error 1.2 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "kinetic_cafe_error"
-  s.version = "1.1"
+  s.version = "1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Austin Ziegler"]
-  s.date = "2015-06-05"
+  s.date = "2015-06-08"
   s.description = "kinetic_cafe_error provides an API-smart error base class and a DSL for\ndefining errors. Under Rails, it also provides a controller concern\n(KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+\nfor KineticCafe::Error types."
   s.email = ["aziegler@kineticcafe.com"]
   s.extra_rdoc_files = ["Contributing.rdoc", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Contributing.rdoc", "History.rdoc", "Licence.rdoc", "README.rdoc"]
-  s.files = [".autotest", ".gemtest", ".travis.yml", "Contributing.rdoc", "Gemfile", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Rakefile", "app/controllers/concerns/kinetic_cafe/error_handler.rb", "app/views/kinetic_cafe_error/_table.html.erb", "app/views/kinetic_cafe_error/_table.html.haml", "app/views/kinetic_cafe_error/_table.html.slim", "app/views/kinetic_cafe_error/page.html.erb", "app/views/kinetic_cafe_error/page.html.haml", "app/views/kinetic_cafe_error/page.html.slim", "config/i18n-tasks.yml.erb", "config/locales/kinetic_cafe_error.en-CA.yml", "config/locales/kinetic_cafe_error.en-UK.yml", "config/locales/kinetic_cafe_error.en-US.yml", "config/locales/kinetic_cafe_error.en.yml", "config/locales/kinetic_cafe_error.fr-CA.yml", "config/locales/kinetic_cafe_error.fr.yml", "lib/kinetic_cafe/error.rb", "lib/kinetic_cafe/error/minitest.rb", "lib/kinetic_cafe/error_dsl.rb", "lib/kinetic_cafe/error_engine.rb", "lib/kinetic_cafe/error_rspec.rb", "lib/kinetic_cafe_error.rb", "test/test_helper.rb", "test/test_kinetic_cafe_error.rb", "test/test_kinetic_cafe_error_dsl.rb"]
+  s.files = [".autotest", ".gemtest", ".travis.yml", "Contributing.rdoc", "Gemfile", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Rakefile", "app/controllers/concerns/kinetic_cafe/error_handler.rb", "app/views/kinetic_cafe_error/_table.html.erb", "app/views/kinetic_cafe_error/_table.html.haml", "app/views/kinetic_cafe_error/_table.html.slim", "app/views/kinetic_cafe_error/page.html.erb", "app/views/kinetic_cafe_error/page.html.haml", "app/views/kinetic_cafe_error/page.html.slim", "config/i18n-tasks.yml.erb", "config/locales/kinetic_cafe_error.en-CA.yml", "config/locales/kinetic_cafe_error.en-UK.yml", "config/locales/kinetic_cafe_error.en-US.yml", "config/locales/kinetic_cafe_error.en.yml", "config/locales/kinetic_cafe_error.fr-CA.yml", "config/locales/kinetic_cafe_error.fr.yml", "lib/kinetic_cafe/error.rb", "lib/kinetic_cafe/error/minitest.rb", "lib/kinetic_cafe/error_dsl.rb", "lib/kinetic_cafe/error_engine.rb", "lib/kinetic_cafe/error_module.rb", "lib/kinetic_cafe/error_rspec.rb", "lib/kinetic_cafe/error_tasks.rake", "lib/kinetic_cafe_error.rb", "test/test_helper.rb", "test/test_kinetic_cafe_error.rb", "test/test_kinetic_cafe_error_dsl.rb", "test/test_kinetic_cafe_error_hierarchy.rb"]
   s.homepage = "https://github.com/KineticCafe/kinetic_cafe_error/"
   s.licenses = ["MIT"]
   s.rdoc_options = ["--main", "README.rdoc"]
