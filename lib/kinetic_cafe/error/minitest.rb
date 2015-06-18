@@ -7,7 +7,7 @@ module Minitest #:nodoc:
     def assert_kc_error expected, actual, params = {}, msg = nil
       msg, params = params, {} if msg.nil? && params.kind_of?(String)
 
-      assert_kind_of KineticCafe::ErrorDSL, actual,
+      assert_kind_of KineticCafe::ErrorModule, actual,
         msg || "Expected #{actual} to be #{expected}, but it was not."
 
       assert_kind_of expected, actual,
