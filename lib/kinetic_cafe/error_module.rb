@@ -64,9 +64,9 @@ module KineticCafe # :nodoc:
     end
 
     # The message associated with this exception. If not provided, defaults to
-    # #i18n_message.
-    def message
-      @message || i18n_message
+    # #i18n_message, which is passed the optional +locale+.
+    def message(locale = nil)
+      @message || i18n_message(locale)
     end
 
     # The name of the error class.
@@ -99,14 +99,28 @@ module KineticCafe # :nodoc:
       false
     end
 
-    # The I18n translation of the message. If I18n.translate is defined,
-    # returns #i18n_key and the I18n parameters.
-    def i18n_message
-      @i18n_message ||= if defined?(I18n.translate)
-                          I18n.translate(i18n_key, @i18n_params).freeze
-                        else
-                          [ i18n_key, @i18n_params ].freeze
-                        end
+    # The I18n translation of the message. If I18n.translate is not defined,
+    # returns #i18n_key and the I18n parameters as an array.
+    #
+    # If I18n is provided, the translation will be performed using the default
+    # locale. The message will be cached unless +locale+ is provided, which
+    # selects a specific locale for translation.
+    #
+    # +locale+ may be provided as a bare locale (<tt>:en</tt>) or as a hash
+    # value (<tt>locale: :en</tt>).
+    def i18n_message(locale = nil)
+      if defined?(I18n.translate)
+        case locale
+        when Hash
+          I18n.translate(i18n_key, @i18n_params.merge(locale))
+        when nil
+          @i18n_message ||= I18n.translate(i18n_key, @i18n_params).freeze
+        else
+          I18n.translate(i18n_key, @i18n_params.merge(locale: locale))
+        end
+      else
+        @i18n_message ||= [ i18n_key, @i18n_params ].freeze
+      end
     end
 
     # The details of this error as a hash. Values that are empty or nil are

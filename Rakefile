@@ -32,6 +32,7 @@ spec = Hoe.spec "kinetic_cafe_error" do
   extra_dev_deps << ['hoe-travis', '~> 1.2']
   extra_dev_deps << ['minitest', '~> 5.4']
   extra_dev_deps << ['minitest-autotest', '~> 1.0']
+  extra_dev_deps << ['minitest-bonus-assertions', '~> 1.0']
   extra_dev_deps << ['minitest-focus', '~> 1.1']
   extra_dev_deps << ['minitest-moar', '~> 0.0']
   extra_dev_deps << ['minitest-stub-const', '~> 0.4']

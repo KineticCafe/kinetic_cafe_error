@@ -5,6 +5,7 @@ require 'minitest/autorun'
 require 'minitest/focus'
 require 'minitest/moar'
 require 'minitest/stub_const'
+require 'minitest-bonus-assertions'
 require 'rack/test'
 require 'kinetic_cafe_error'
 

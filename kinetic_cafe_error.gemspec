@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Austin Ziegler"]
-  s.date = "2015-06-08"
-  s.description = "kinetic_cafe_error provides an API-smart error base class and a DSL for\ndefining errors. Under Rails, it also provides a controller concern\n(KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+\nfor KineticCafe::Error types."
+  s.date = "2015-06-18"
+  s.description = "kinetic_cafe_error provides an API-smart error base class and a DSL for\ndefining errors. Under Rails, it also provides a controller concern\n(KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+\nto handle KineticCafe::Error types.\n\nExceptions in a hierarchy can be handled in a uniform manner, including getting\nan I18n translation message with parameters, standard status values, and\nmeaningful JSON representations that can be used to establish a standard error\nrepresentations across both clients and servers."
   s.email = ["aziegler@kineticcafe.com"]
   s.extra_rdoc_files = ["Contributing.rdoc", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Contributing.rdoc", "History.rdoc", "Licence.rdoc", "README.rdoc"]
   s.files = [".autotest", ".gemtest", ".travis.yml", "Contributing.rdoc", "Gemfile", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Rakefile", "app/controllers/concerns/kinetic_cafe/error_handler.rb", "app/views/kinetic_cafe_error/_table.html.erb", "app/views/kinetic_cafe_error/_table.html.haml", "app/views/kinetic_cafe_error/_table.html.slim", "app/views/kinetic_cafe_error/page.html.erb", "app/views/kinetic_cafe_error/page.html.haml", "app/views/kinetic_cafe_error/page.html.slim", "config/i18n-tasks.yml.erb", "config/locales/kinetic_cafe_error.en-CA.yml", "config/locales/kinetic_cafe_error.en-UK.yml", "config/locales/kinetic_cafe_error.en-US.yml", "config/locales/kinetic_cafe_error.en.yml", "config/locales/kinetic_cafe_error.fr-CA.yml", "config/locales/kinetic_cafe_error.fr.yml", "lib/kinetic_cafe/error.rb", "lib/kinetic_cafe/error/minitest.rb", "lib/kinetic_cafe/error_dsl.rb", "lib/kinetic_cafe/error_engine.rb", "lib/kinetic_cafe/error_module.rb", "lib/kinetic_cafe/error_rspec.rb", "lib/kinetic_cafe/error_tasks.rake", "lib/kinetic_cafe_error.rb", "test/test_helper.rb", "test/test_kinetic_cafe_error.rb", "test/test_kinetic_cafe_error_dsl.rb", "test/test_kinetic_cafe_error_hierarchy.rb"]
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<hoe-rubygems>, ["~> 1.0"])
       s.add_development_dependency(%q<hoe-travis>, ["~> 1.2"])
       s.add_development_dependency(%q<minitest-autotest>, ["~> 1.0"])
+      s.add_development_dependency(%q<minitest-bonus-assertions>, ["~> 1.0"])
       s.add_development_dependency(%q<minitest-focus>, ["~> 1.1"])
       s.add_development_dependency(%q<minitest-moar>, ["~> 0.0"])
       s.add_development_dependency(%q<minitest-stub-const>, ["~> 0.4"])
@@ -49,6 +50,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<hoe-rubygems>, ["~> 1.0"])
       s.add_dependency(%q<hoe-travis>, ["~> 1.2"])
       s.add_dependency(%q<minitest-autotest>, ["~> 1.0"])
+      s.add_dependency(%q<minitest-bonus-assertions>, ["~> 1.0"])
       s.add_dependency(%q<minitest-focus>, ["~> 1.1"])
       s.add_dependency(%q<minitest-moar>, ["~> 0.0"])
       s.add_dependency(%q<minitest-stub-const>, ["~> 0.4"])
@@ -67,6 +69,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<hoe-rubygems>, ["~> 1.0"])
     s.add_dependency(%q<hoe-travis>, ["~> 1.2"])
     s.add_dependency(%q<minitest-autotest>, ["~> 1.0"])
+    s.add_dependency(%q<minitest-bonus-assertions>, ["~> 1.0"])
     s.add_dependency(%q<minitest-focus>, ["~> 1.1"])
     s.add_dependency(%q<minitest-moar>, ["~> 0.0"])
     s.add_dependency(%q<minitest-stub-const>, ["~> 0.4"])

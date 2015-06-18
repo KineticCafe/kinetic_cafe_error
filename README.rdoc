@@ -60,6 +60,10 @@ automatically injected, which enables the following functionality:
 
   #kinetic_cafe_error_handler distinguishes between HTML and JSON contexts.
 
+  The error will be logged in a single language, with a configuration option
+  that can be provided with the kinetic_cafe_error_handler_log_locale helper
+  method.
+
 === Using with Minitest
 
 KineticCafe::Error provides a number of assertions that can help testing that

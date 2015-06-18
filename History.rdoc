@@ -1,3 +1,29 @@
+=== 1.3 / 2015-06-18
+
+* 3 minor enhancements
+
+  * Added a controller method, kinetic_cafe_error_handler_log_error, in
+    KineticCafe::ErrorHandler that will log the given error in the default
+    logging language, and its cause, if any.
+
+  * Added a controller class method to change the default logging language for
+    kinetic_cafe_error_handler_log_error. A locale may be provided with
+    kinetic_cafe_error_handler_log_locale. Fixes
+    [#2]{https://github.com/KineticCafe/kinetic_cafe_error/issues/2}.
+
+  * Added an optional +locale+ parameter to KineticCafe::ErrorModule#message
+    and KineticCafe::ErrorModule::#i18n_message. If I18n is present and
+    +locale+ is provided, the translation will *not* be cached and the
+    translation will be performed using the provided locale.
+
+* 1 bug fixed
+
+  * The Minitest assertion, assert_kc_error, could not work because it was
+    looking for descendants of KineticCafe::ErrorDSL, not
+    KineticCafe::ErrorModule. Reported by @richardsondx as
+    [#3]{https://github.com/KineticCafe/kinetic_cafe_error/issues/3} during a
+    pairing session.
+
 === 1.2 / 2015-06-08
 
 * 1 major enhancement
