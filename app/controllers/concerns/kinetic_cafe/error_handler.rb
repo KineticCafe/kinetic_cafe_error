@@ -8,6 +8,8 @@ module KineticCafe::ErrorHandler
 
   included do
     kinetic_cafe_error_handler_for KineticCafe::Error
+
+    class_attribute :__kinetic_cafe_error_handler_log_locale # :nodoc:
   end
 
   module ClassMethods
@@ -24,9 +26,9 @@ module KineticCafe::ErrorHandler
     # common logging locale for KineticCafe::Error handling without changing
     # I18n.default_locale.
     def kinetic_cafe_error_handler_log_locale(locale = nil)
-      @@kinetic_cafe_error_handler_log_locale = locale if locale
-      @@kinetic_cafe_error_handler_log_locale ||= I18n.default_locale
-      @@kinetic_cafe_error_handler_log_locale
+      self.__kinetic_cafe_error_handler_log_locale = locale if locale
+      self.__kinetic_cafe_error_handler_log_locale ||= I18n.default_locale
+      self.__kinetic_cafe_error_handler_log_locale
     end
   end
 
@@ -84,14 +86,15 @@ module KineticCafe::ErrorHandler
   def kinetic_cafe_error_log_error(error)
     locale = self.class.kinetic_cafe_error_handler_log_locale
     Rails.logger.error(error.message(locale))
-    if error.cause
-      Rails.logger.error(
-        t(
-          'kinetic_cafe_error.cause',
-          message: error.cause.message,
-          locale: locale
-        )
+
+    return unless error.cause
+
+    Rails.logger.error(
+      t(
+        'kinetic_cafe_error.cause',
+        message: error.cause.message,
+        locale: locale
       )
-    end
+    )
   end
 end

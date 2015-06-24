@@ -87,10 +87,10 @@ module KineticCafe
           fail ArgumentError, ":key conflicts with class:#{klass}"
         end
 
-        key = if status.kind_of?(Symbol) or status.kind_of?(String)
+        key = if status.kind_of?(Symbol) || status.kind_of?(String)
                 "#{klass}_#{KineticCafe::ErrorDSL.namify(status)}"
               else
-                "#{klass}_#{KineticCafe::ErrorDSL.namify(self.name)}"
+                "#{klass}_#{KineticCafe::ErrorDSL.namify(name)}"
               end
       else
         key = options.fetch(:key) {
@@ -168,7 +168,7 @@ module KineticCafe
       end
 
       if defined?(Rack::Utils) && rack_status
-        Rack::Utils::SYMBOL_TO_STATUS_CODE.each do |name, value|
+        Rack::Utils::SYMBOL_TO_STATUS_CODE.each_key do |name|
           if rack_status.fetch(:methods, true)
             base.singleton_class.send :define_method, name do |options = {}|
               define_error(options.merge(status: name))

@@ -38,10 +38,7 @@ module Minitest #:nodoc:
 
     # Assert that a reponse body (<tt>@response.body</tt>, useful from
     # ActionController::TestCase) is HTML for the expected error.
-    # convenience wrapper around #assert_kc_error_json.
-    def assert_response_kc_error_html expected, params = {}, msg = nil
-      msg, params = params, {} if msg.nil? && params.kind_of?(String)
-
+    def assert_response_kc_error_html expected, msg = nil
       msg ||= "Expected #{actual} to be HTML for #{expected}, but it was not."
 
       assert_template 'kinetic_cafe_error/page', msg
@@ -57,13 +54,11 @@ module Minitest #:nodoc:
     # #assert_kc_error_html, depending on whether or not the response is HTML
     # or not.
     def assert_response_kc_error expected, params = {}, msg = nil
-      if msg.nil? && params.kind_of?(String)
-        msg, params = params, {}
-      end
+      msg, params = params, {} if msg.nil? && params.kind_of?(String)
       msg ||= "Expected response to be #{expected}, but was not."
 
       if @request.format.html?
-        assert_response_kc_error_html expected, params, msg
+        assert_response_kc_error_html expected, msg
       else
         assert_kc_error_json expected, @response.body, params, msg
       end

@@ -181,25 +181,26 @@ module KineticCafe # :nodoc:
 
       ##
       def included(mod)
-        unless mod.respond_to?(:i18n_key_base)
-          mod.send :define_singleton_method, :i18n_key_base do
-            'kcerrors'.freeze
-          end
+        default_singleton_method mod, :i18n_key_base do
+          'kcerrors'.freeze
         end
 
-        unless mod.respond_to?(:i18n_params)
-          mod.send :define_singleton_method, :i18n_params do
-            [].freeze
-          end
+        default_singleton_method mod, :i18n_params do
+          [].freeze
         end
 
-        unless mod.respond_to?(:i18n_key)
-          mod.send :define_singleton_method, :i18n_key do
-            @i18n_key ||= [
-              i18n_key_base, KineticCafe::ErrorDSL.namify(name)
-            ].join('.').freeze
-          end
+        default_singleton_method mod, :i18n_key do
+          @i18n_key ||= [
+            i18n_key_base, KineticCafe::ErrorDSL.namify(name)
+          ].join('.').freeze
         end
+      end
+
+      private
+
+      def default_singleton_method(mod, name, &block)
+        return if mod.respond_to? name
+        mod.send :define_singleton_method, name, &block
       end
     end
   end
