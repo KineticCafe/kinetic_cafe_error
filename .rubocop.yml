@@ -1,0 +1,132 @@
+---
+# inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Include:
+    - '**/Rakefile'
+    - '**/config.rb'
+  Exclude:
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'tmp/**/*'
+  RunRailsCops: true
+  DisplayCopNames: true
+
+Style/AlignHash:
+  EnforcedHashRocketStyle: key
+  EnforcedColonStyle: key
+  EnforcedLastArgumentHashStyle: always_ignore
+
+Style/AlignParameters:
+  EnforcedStyle: with_first_parameter
+
+Style/AndOr:
+  EnforcedStyle: conditionals
+
+Style/BarePercentLiterals:
+  EnforcedStyle: percent_q
+
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+
+Style/Documentation:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Style/TrailingComma:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Style/DotPosition:
+  EnforcedStyle: trailing
+
+Style/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+# Style/BlockDelimiters in semantic mode is the only correct choice, but it is
+# too finicky to use reliably.
+Style/BlockDelimiters:
+  Enabled: false
+  EnforcedStyle: semantic
+
+Style/FormatString:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/SpaceInsideBrackets:
+  Enabled: false
+
+Style/CommentAnnotation:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/ClassCheck:
+  EnforcedStyle: kind_of?
+
+Style/RegexpLiteral:
+  EnforcedStyle: mixed
+
+Style/CommandLiteral:
+  EnforcedStyle: percent_x
+
+Style/UnneededPercentQ:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 80
+  Exclude:
+    - test/**/*
+
+Style/MethodDefParentheses:
+  Exclude:
+    - test/**/*
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/MethodDefParentheses:
+  Exclude:
+    - lib/kinetic_cafe/error/minitest.rb
+
+Style/PerlBackrefs:
+  Exclude:
+    - lib/kinetic_cafe/error_dsl.rb
+
+Rails/Output:
+  Exclude:
+    - lib/**/*
+
+Style/LambdaCall:
+  Exclude:
+    - lib/kinetic_cafe/error_tasks.rb

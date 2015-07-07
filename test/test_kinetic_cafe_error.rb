@@ -33,7 +33,7 @@ describe KineticCafe::Error do
           assert_equal(
             [
               'kcerrors.error',
-              { query: "a: 1; b[]: x, b[]: y, b[]: z; c[][d]: 1; c[][e]: 2; f[]: []" }
+              { query: 'a: 1; b[]: x, b[]: y, b[]: z; c[][d]: 1; c[][e]: 2; f[]: []' }
             ],
             exception.i18n_message
           )
@@ -91,9 +91,9 @@ describe KineticCafe::Error do
       assert_equal(
         {
           status: :bad_request,
-          name: "error",
+          name: 'error',
           internal: false,
-          i18n_key: "kcerrors.error"
+          i18n_key: 'kcerrors.error'
         },
         exception.api_error
       )
@@ -104,9 +104,9 @@ describe KineticCafe::Error do
         {
           error: {
             status: :bad_request,
-            name: "error",
+            name: 'error',
             internal: false,
-            i18n_key: "kcerrors.error"
+            i18n_key: 'kcerrors.error'
           },
           message: nil
         },
@@ -121,9 +121,9 @@ describe KineticCafe::Error do
           json: {
             error: {
               status: :bad_request,
-              name: "error",
+              name: 'error',
               internal: false,
-              i18n_key: "kcerrors.error"
+              i18n_key: 'kcerrors.error'
             },
             message: nil
           },

@@ -55,7 +55,7 @@ module KineticCafe
       diffable
     end
 
-    matcher :be_kc_error_html do |expected, params = {}|
+    matcher :be_kc_error_html do |expected|
       match do |actual|
         expect(actual).to render_template('kinetic_cafe_error/page')
         expect(actual).to render_template('kinetic_cafe_error/_table')
