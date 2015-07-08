@@ -1,3 +1,9 @@
+=== 1.4.1 / 2015-07-08
+
+* 1 bug fix
+
+  * Fixed an error with loading error_tasks.rake from the Rails engine.
+
 === 1.4 / 2015-07-07
 
 * 2 minor enhancements
