@@ -9,8 +9,15 @@ module KineticCafe # :nodoc:
     # Extra data relevant to recipients of the exception, provided on
     # construction.
     attr_reader :extra
-    # The exception that caused this exception; provided on construction.
-    attr_reader :cause
+    ##
+    # :attr_reader:
+    # The exception that caused this exception. Provided on exception
+    # construction or automatically through Ruby’s standard exception
+    # mechanism.
+    def cause
+      initialize_cause(super) if !@initialized_cause && super
+      @cause
+    end
 
     # Create a new error with the given parameters.
     #
@@ -53,14 +60,12 @@ module KineticCafe # :nodoc:
       @status      = options.delete(:status) || default_status
       @i18n_params = options.delete(:i18n_params) || {}
       @extra       = options.delete(:extra)
-      @cause       = options.delete(:cause)
 
-      @i18n_params.update(cause: cause.message) if cause
+      initialize_cause(options.delete(:cause)) if options.key?(:cause)
 
       query = options.delete(:query)
       @i18n_params.merge!(query: stringify(query)) if query
       @i18n_params.merge!(options)
-      @i18n_params.freeze
     end
 
     # The message associated with this exception. If not provided, defaults to
@@ -159,6 +164,18 @@ module KineticCafe # :nodoc:
         "message=#{message.inspect} i18n_key=#{i18n_key} " \
         "i18n_params=#{@i18n_params.inspect} extra=#{extra.inspect} " \
         "cause=#{cause}>"
+    end
+
+    private
+
+    def initialize_cause(cause)
+      unless cause.kind_of? Exception
+        fail ArgumentError, 'cause must be an Exception'
+      end
+
+      @initialized_cause = true
+      @cause = cause
+      @i18n_params.update(cause: @cause.message)
     end
 
     class << self
