@@ -5,8 +5,8 @@ module KineticCafe
   # these with:
   #
   #   require 'kinetic_cafe/error_rspec'
-  #   Rspec.configure do |c|
-  #     c.include KineticCafe::ErrorRspec
+  #   RSpec.configure do |c|
+  #     c.include KineticCafe::ErrorRSpec
   #   end
   #
   # +be_json_for+:: Verifies that the expected value is a JSON representation
@@ -20,8 +20,8 @@ module KineticCafe
   #
   # +be_kc_error_html+:: Verifies that the rendered HTML matches the output of
   #                      KineticCafe::Error.
-  module ErrorRspec
-    extend ::Rspec::Matchers::DSL
+  module ErrorRSpec
+    extend ::RSpec::Matchers::DSL
 
     matcher :be_json_for do |expected|
       match do |actual|

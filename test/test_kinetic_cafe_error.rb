@@ -13,7 +13,7 @@ describe KineticCafe::Error do
       end
     end
 
-    describe '#messsage and #i18n_message' do
+    describe '#message and #i18n_message' do
       it 'returns key/params if I18n.translate is not defined' do
         Object.stub_remove_const(:I18n) do
           assert_equal [ 'kcerrors.error', {} ], exception.i18n_message
