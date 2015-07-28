@@ -13,7 +13,7 @@ describe KineticCafe::Error do
       end
     end
 
-    describe '#messsage and #i18n_message' do
+    describe '#message and #i18n_message' do
       it 'returns key/params if I18n.translate is not defined' do
         Object.stub_remove_const(:I18n) do
           assert_equal [ 'kcerrors.error', {} ], exception.i18n_message
@@ -143,6 +143,35 @@ describe KineticCafe::Error do
 
     it 'has no I18n parameters by default' do
       assert_empty KineticCafe::Error.i18n_params
+    end
+  end
+
+  describe 'handles causing exceptions' do
+    before do
+      begin
+        begin
+          fail 'causing'
+        rescue => ex
+          @causing_exception = ex
+          raise KineticCafe::Error, cause: @causing_exception,
+            message: 'wrapping'
+        end
+      rescue => ex
+        @wrapping_exception = ex
+      end
+    end
+
+    it 'captures the causting exception' do
+      refute_nil @wrapping_exception.cause, 'No exception captured'
+      assert_equal @causing_exception, @wrapping_exception.cause
+    end
+
+    it 'puts the cause message in i18n_params when the cause is requested' do
+      refute_nil @wrapping_exception.cause, 'No exception captured'
+      assert_equal(
+        { cause: 'causing' },
+        @wrapping_exception.instance_variable_get(:@i18n_params)
+      )
     end
   end
 end

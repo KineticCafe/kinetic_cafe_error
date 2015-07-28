@@ -109,3 +109,11 @@ ignore_eq_base:
 ## Ignore these keys completely:
 # ignore:
 #  - kaminari.*
+
+<% require 'i18n-tasks-csv' %>
+
+csv:
+  export:
+    - tmp/i18n-export/kinetic_cafe_error.csv
+  import:
+    - tmp/i18n-export/kinetic_cafe_error.csv

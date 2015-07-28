@@ -28,7 +28,7 @@ module KineticCafe::ErrorHandler
     def kinetic_cafe_error_handler_log_locale(locale = nil)
       self.__kinetic_cafe_error_handler_log_locale = locale if locale
       self.__kinetic_cafe_error_handler_log_locale ||= I18n.default_locale
-      self.__kinetic_cafe_error_handler_log_locale
+      __kinetic_cafe_error_handler_log_locale
     end
   end
 

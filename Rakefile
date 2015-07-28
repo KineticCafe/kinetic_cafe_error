@@ -35,6 +35,8 @@ spec = Hoe.spec 'kinetic_cafe_error' do
   extra_dev_deps << ['minitest-stub-const', '~> 0.4']
   extra_dev_deps << ['rack-test', '~> 0.6']
   extra_dev_deps << ['rake', '~> 10.0']
+  extra_dev_deps << ['i18n-tasks', '~> 0.8']
+  extra_dev_deps << ['i18n-tasks-csv', '~> 1.0']
   extra_dev_deps << ['rubocop', '~> 0.32']
   extra_dev_deps << ['simplecov', '~> 0.7']
   extra_dev_deps << ['coveralls', '~> 0.8']
