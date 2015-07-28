@@ -15,7 +15,17 @@ module KineticCafe # :nodoc:
     # construction or automatically through Ruby’s standard exception
     # mechanism.
     def cause
-      initialize_cause(super) if !@initialized_cause && super
+      unless @initialized_cause
+        begin
+          initialize_cause(super) if !@initialized_cause && super
+        rescue NoMethodError
+          # We are suppressing this error because Exception#cause was
+          # implemented in Ruby 2.1.
+          @initialized_cause = true
+          @cause = nil
+        end
+      end
+
       @cause
     end
 
@@ -32,7 +42,8 @@ module KineticCafe # :nodoc:
     # +i18n_params+:: The parameters to be sent to I18n.translate with the
     #                 #i18n_key.
     # +cause+:: The exception that caused this error. Used to wrap an earlier
-    #           exception.
+    #           exception. This is only necessary for Ruby before 2.1 or when
+    #           directly initializing the exception.
     # +extra+:: Extra data to be returned in the API representation of this
     #           exception.
     # +query+:: A hash of parameters added to +i18n_params+, typically from
@@ -61,6 +72,7 @@ module KineticCafe # :nodoc:
       @i18n_params = options.delete(:i18n_params) || {}
       @extra       = options.delete(:extra)
 
+      @initialized_cause = false
       initialize_cause(options.delete(:cause)) if options.key?(:cause)
 
       query = options.delete(:query)
@@ -169,6 +181,8 @@ module KineticCafe # :nodoc:
     private
 
     def initialize_cause(cause)
+      return if cause.nil?
+
       unless cause.kind_of? Exception
         fail ArgumentError, 'cause must be an Exception'
       end

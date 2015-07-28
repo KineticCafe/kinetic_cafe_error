@@ -1,3 +1,22 @@
+=== 1.5 / 2015-07-28
+
+* 2 bug fixes:
+
+  * Handle error causes correctly for Ruby 2.1 or later, where <tt>raise
+    Exception, cause: RuntimeError.new</tt> does not pass the +cause+ the
+    exception constructor, but it still sets the cause correctly on the
+    exception. These changes make this correct for both +raise+ construction
+    and normal construction.
+
+  * The RSpec helpers did not work because they spelled the class +Rspec+, not
+    +RSpec+. This has been fixed.
+
+* 2 development changes:
+
+  * Fixed some test typos.
+
+  * Add i18n-tasks for CSV exports.
+
 === 1.4.1 / 2015-07-08
 
 * 1 bug fix

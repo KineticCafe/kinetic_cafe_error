@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: kinetic_cafe_error 1.4.1 ruby lib
+# stub: kinetic_cafe_error 1.5 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "kinetic_cafe_error"
-  s.version = "1.4.1"
+  s.version = "1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Austin Ziegler"]
-  s.date = "2015-07-08"
+  s.date = "2015-07-28"
   s.description = "kinetic_cafe_error provides an API-smart error base class and a DSL for\ndefining errors. Under Rails, it also provides a controller concern\n(KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+\nto handle KineticCafe::Error types.\n\nExceptions in a hierarchy can be handled in a uniform manner, including getting\nan I18n translation message with parameters, standard status values, and\nmeaningful JSON representations that can be used to establish a standard error\nrepresentations across both clients and servers."
   s.email = ["aziegler@kineticcafe.com"]
   s.extra_rdoc_files = ["Contributing.rdoc", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Contributing.rdoc", "History.rdoc", "Licence.rdoc", "README.rdoc"]
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.rdoc_options = ["--main", "README.rdoc"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
-  s.rubygems_version = "2.4.5"
+  s.rubygems_version = "2.4.8"
   s.summary = "kinetic_cafe_error provides an API-smart error base class and a DSL for defining errors"
 
   if s.respond_to? :specification_version then
@@ -38,6 +38,8 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<minitest-stub-const>, ["~> 0.4"])
       s.add_development_dependency(%q<rack-test>, ["~> 0.6"])
       s.add_development_dependency(%q<rake>, ["~> 10.0"])
+      s.add_development_dependency(%q<i18n-tasks>, ["~> 0.8"])
+      s.add_development_dependency(%q<i18n-tasks-csv>, ["~> 1.0"])
       s.add_development_dependency(%q<rubocop>, ["~> 0.32"])
       s.add_development_dependency(%q<simplecov>, ["~> 0.7"])
       s.add_development_dependency(%q<coveralls>, ["~> 0.8"])
@@ -57,6 +59,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<minitest-stub-const>, ["~> 0.4"])
       s.add_dependency(%q<rack-test>, ["~> 0.6"])
       s.add_dependency(%q<rake>, ["~> 10.0"])
+      s.add_dependency(%q<i18n-tasks>, ["~> 0.8"])
+      s.add_dependency(%q<i18n-tasks-csv>, ["~> 1.0"])
       s.add_dependency(%q<rubocop>, ["~> 0.32"])
       s.add_dependency(%q<simplecov>, ["~> 0.7"])
       s.add_dependency(%q<coveralls>, ["~> 0.8"])
@@ -77,6 +81,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<minitest-stub-const>, ["~> 0.4"])
     s.add_dependency(%q<rack-test>, ["~> 0.6"])
     s.add_dependency(%q<rake>, ["~> 10.0"])
+    s.add_dependency(%q<i18n-tasks>, ["~> 0.8"])
+    s.add_dependency(%q<i18n-tasks-csv>, ["~> 1.0"])
     s.add_dependency(%q<rubocop>, ["~> 0.32"])
     s.add_dependency(%q<simplecov>, ["~> 0.7"])
     s.add_dependency(%q<coveralls>, ["~> 0.8"])

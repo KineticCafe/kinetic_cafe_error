@@ -153,7 +153,8 @@ describe KineticCafe::Error do
           fail 'causing'
         rescue => ex
           @causing_exception = ex
-          raise KineticCafe::Error, message: 'wrapping'
+          raise KineticCafe::Error, cause: @causing_exception,
+            message: 'wrapping'
         end
       rescue => ex
         @wrapping_exception = ex
