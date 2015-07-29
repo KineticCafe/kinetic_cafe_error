@@ -73,6 +73,7 @@ module KineticCafe # :nodoc:
       @extra       = options.delete(:extra)
 
       @initialized_cause = false
+      @cause = nil
       initialize_cause(options.delete(:cause)) if options.key?(:cause)
 
       query = options.delete(:query)
