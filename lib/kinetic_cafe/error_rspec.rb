@@ -40,6 +40,16 @@ module KineticCafe
       match do |actual|
         expect(actual).to be_kind_of(KineticCafe::ErrorModule)
         expect(actual).to be_kind_of(expected)
+
+        unless params.key?(:cause)
+          actual = actual.dup
+          actual.instance_variable_set(:@cause, nil)
+          actual.instance_variable_set(:@initialized_cause, true)
+          actual.instance_variable_get(:@i18n_params).tap do |params|
+            params.delete(:cause)
+          end
+        end
+
         expect(actual).to eq(expected.new(params))
       end
 
@@ -48,6 +58,17 @@ module KineticCafe
 
     matcher :be_kc_error_json do |expected, params = {}|
       match do |actual|
+        unless params.key?(:cause)
+          actual['error'].tap do |error|
+            error.delete('cause')
+            if error['i18n_params']
+              error['i18n_params'].delete('cause')
+              error.delete('i18n_params') if error['i18n_params'].empty?
+            end
+          end
+          actual
+        end
+
         expect(actual).to \
           be_json_for(JSON.parse(expected.new(params).error_result.to_json))
       end

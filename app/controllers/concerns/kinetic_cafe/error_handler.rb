@@ -40,7 +40,28 @@ module KineticCafe::ErrorHandler
   # HTML is rendered with #kinetic_cafe_error_render_html. JSON is rendered
   # with #kinetic_cafe_error_render_json. Either of these can be overridden in
   # controllers for different behaviour.
-  def kinetic_cafe_error_handler(error)
+  #
+  # As an option, +kinetic_cafe_error_handler+ can also be used in a
+  # +rescue_from+ block with an error class and parameters, and it will
+  # construct the error for handling. The following example assumes that there
+  # is an error called ObjectNotFound.
+  #
+  #   rescue_from ActiveRecord::NotFound do |error|
+  #     kinetic_cafe_error_handler KineticCafe::Error::ObjectNotFound,
+  #       cause: error
+  #   end
+  #
+  # This would be the same as:
+  #
+  #   rescue_from ActiveRecord::NotFound do |error|
+  #     kinetic_cafe_error_handler KineticCafe::Error::ObjectNotFound.new(
+  #       cause: error
+  #     )
+  #   end
+  def kinetic_cafe_error_handler(error, error_params = {})
+    # If the error provided is actually an error class, make an error instance.
+    error.kind_of?(KineticCafe::ErrorDSL) && error = error.new(error_params)
+
     kinetic_cafe_error_log_error(error)
 
     respond_to do |format|

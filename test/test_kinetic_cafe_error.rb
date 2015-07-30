@@ -161,7 +161,7 @@ describe KineticCafe::Error do
       end
     end
 
-    it 'captures the causting exception' do
+    it 'captures the causing exception' do
       refute_nil @wrapping_exception.cause, 'No exception captured'
       assert_equal @causing_exception, @wrapping_exception.cause
     end

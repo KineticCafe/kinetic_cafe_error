@@ -4,6 +4,9 @@ module Minitest #:nodoc:
     # Assert that the +actual+ exception received is the +expected+ descendant
     # of KineticCafe::Error and that it has been constructed with the same
     # +params+ provided.
+    #
+    # If a +cause+ is not provided, any cause on the received error will be
+    # ignored.
     def assert_kc_error expected, actual, params = {}, msg = nil
       msg, params = params, {} if msg.nil? && params.kind_of?(String)
 
@@ -12,6 +15,15 @@ module Minitest #:nodoc:
 
       assert_kind_of expected, actual,
         msg || "Expected #{actual} to be #{expected}, but it was not."
+
+      unless params.key?(:cause)
+        actual = actual.dup
+        actual.instance_variable_set(:@cause, nil)
+        actual.instance_variable_set(:@initialized_cause, true)
+        actual.instance_variable_get(:@i18n_params).tap do |params|
+          params.delete(:cause)
+        end
+      end
 
       expected = expected.new(params)
       assert_equal expected, actual,
@@ -26,11 +38,26 @@ module Minitest #:nodoc:
     # output is compared, not KineticCafe::Error objects. The JSON for the
     # provided KineticCafe::Error object is generated through
     # KineticCafe::Error#error_json.
+    #
+    # If a +cause+ is not provided, any cause on the received error will be
+    # ignored.
     def assert_kc_error_json expected, actual, params = {}, msg = nil
       msg, params = params, {} if msg.nil? && params.kind_of?(String)
 
       msg ||= "Expected #{actual} to be JSON for #{expected}, but it was not."
       actual = JSON.parse(actual)
+
+      unless params.key?(:cause)
+        actual['error'].tap do |error|
+          error.delete('cause')
+          if error['i18n_params']
+            error['i18n_params'].delete('cause')
+            error.delete('i18n_params') if error['i18n_params'].empty?
+          end
+        end
+        actual
+      end
+
       expected = JSON.parse(expected.new(params).error_result.to_json)
 
       assert_equal expected, actual, msg

@@ -1,4 +1,18 @@
-=== 1.5 / 2015-07-28
+=== 1.6 / 2015-07-30
+
+* 2 minor enhancements:
+
+  * Improve the Minitest and RSpec test helpers so that they ignore the error
+    +cause+ if it is not included as part of the assertion. The specification
+    of the +cause+ is recommended if you have specific values you want to
+    compare.
+
+  * Improve +kinetic_cafe_error_handler+ so that if it is called with an error
+    class instead of an instance of an error, it will construct the error
+    instance with the provided parameters. This makes custom +rescue_from+
+    constructions cleaner.
+
+=== 1.5 / 2015-07-29
 
 * 2 bug fixes:
 
