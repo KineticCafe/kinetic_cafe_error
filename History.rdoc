@@ -1,5 +1,10 @@
 === 1.7 / 2015-08-05
 
+* 1 minor enhancement:
+
+  * Add a +params+ parameter to the <tt>kcerror:defined</tt> task that
+    will show the parameter names the exception expects.
+
 * 1 bug fix:
 
   * RubyMine does not fully initialize the project when running RSpec, meaning
