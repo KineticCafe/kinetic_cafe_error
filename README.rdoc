@@ -38,8 +38,9 @@ automatically injected, which enables the following functionality:
 
 * Two rake tasks:
 
-  * <tt>rake kcerror:defined</tt>, showing the errors defined in the known
-    hierarchy.
+  * <tt>rake kcerror:defined[params]</tt>, showing the errors defined in the
+    known hierarchy. If +params+ is 'yes', the expected parameters will be
+    shown.
 
   * <tt>rake kcerror:translations[output]</tt>, creating a template translation
     file for all defined errors.
@@ -109,7 +110,7 @@ KineticCafe::Error provides four experimental matchers:
 
 Add kinetic_cafe_error to your Gemfile:
 
-  gem 'kinetic_cafe_error', '~> 1.2'
+  gem 'kinetic_cafe_error', '~> 1.7'
 
 If not using Rails, install with RubyGems:
 

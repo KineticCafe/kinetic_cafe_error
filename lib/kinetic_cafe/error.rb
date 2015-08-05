@@ -25,7 +25,7 @@ module KineticCafe # :nodoc:
   # rescue clause and handled there, as is shown in the included
   # KineticCafe::ErrorHandler controller concern for Rails.
   class Error < ::StandardError
-    VERSION = '1.6' # :nodoc:
+    VERSION = '1.7' # :nodoc:
 
     # Get the KineticCafe::Error functionality.
     include KineticCafe::ErrorModule
@@ -219,4 +219,4 @@ end
 
 require_relative 'error_dsl'
 require_relative 'error_engine' if defined?(::Rails)
-require_relative 'error_tasks' if defined?(::Rake)
+require_relative 'error_tasks' if defined?(::Rake::DSL)

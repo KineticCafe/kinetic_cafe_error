@@ -9,21 +9,35 @@ module KineticCafe::ErrorTasks
 
   namespace :kcerror do
     desc 'Show defined errors.'
-    task defined: 'kcerror:find' do
-      display = ->(root, prefix = '') {
-        puts "#{prefix}- #{root}"
+    task :defined, [ :params ] => 'kcerror:find' do |_, args|
+      show_params = args.params =~ /^y/i
+
+      display = ->(root, prefix: '', show_params: false) {
+        line = "#{prefix}- #{root}"
+
+        if !root.i18n_params.empty? && show_params
+          line << " (" << root.i18n_params.join(', ') << ")"
+        end
+
+        puts line
 
         if @descendants[root]
           sorted = @descendants[root].sort_by(&:to_s)
           sorted.each do |child|
             s = (child == sorted.last) ? '`' : '|'
-            display.(child, "#{prefix.tr('|`', ' ')}  #{s}")
+            display.(
+              child,
+              prefix: "#{prefix.tr('|`', ' ')}  #{s}",
+              show_params: show_params
+            )
           end
         end
       }
 
       if @descendants[StandardError]
-        @descendants[StandardError].sort_by(&:to_s).each { |d| display.(d) }
+        @descendants[StandardError].sort_by(&:to_s).each { |d|
+          display.(d, show_params: show_params)
+        }
       else
         puts 'No defined errors.'
       end
