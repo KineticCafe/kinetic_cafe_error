@@ -1,3 +1,11 @@
+=== 1.7 / 2015-08-05
+
+* 1 bug fix:
+
+  * RubyMine does not fully initialize the project when running RSpec, meaning
+    that while Rake is defined, Rake::DSL is not. As such, we need to prevent
+    the Rake task from loading unless Rake::DSL is present.
+
 === 1.6 / 2015-07-30
 
 * 2 minor enhancements:

@@ -219,4 +219,4 @@ end
 
 require_relative 'error_dsl'
 require_relative 'error_engine' if defined?(::Rails)
-require_relative 'error_tasks' if defined?(::Rake)
+require_relative 'error_tasks' if defined?(::Rake::DSL)
