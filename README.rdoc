@@ -110,7 +110,7 @@ KineticCafe::Error provides four experimental matchers:
 
 Add kinetic_cafe_error to your Gemfile:
 
-  gem 'kinetic_cafe_error', '~> 1.2'
+  gem 'kinetic_cafe_error', '~> 1.7'
 
 If not using Rails, install with RubyGems:
 
