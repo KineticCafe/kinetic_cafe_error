@@ -35,11 +35,18 @@ module KineticCafe::ErrorHandler
   # This method is called with +error+ when Rails catches a KineticCafe::Error
   # descendant. It logs the message and its cause as severity error. After
   # logging as +error+, it will render to HTML or JSON. The received error is
-  # logged using the value of #kinetic_cafe_error_handler_log_locale.
+  # logged using the value of #kinetic_cafe_error_handler_log_locale. After
+  # rendering to HTML or JSON, +error+ will be passed to a post-processing
+  # handler.
   #
   # HTML is rendered with #kinetic_cafe_error_render_html. JSON is rendered
   # with #kinetic_cafe_error_render_json. Either of these can be overridden in
   # controllers for different behaviour.
+  #
+  # The +error+ is passed to #kinetic_cafe_error_handle_post_error to be
+  # handled for post-processing. This should be overridden to implement
+  # post-processing, for example passing the error to an external error
+  # capturing/tracking service such as Airbrake or Sentry.
   #
   # As an option, +kinetic_cafe_error_handler+ can also be used in a
   # +rescue_from+ block with an error class and parameters, and it will
@@ -72,6 +79,8 @@ module KineticCafe::ErrorHandler
         kinetic_cafe_error_render_json(error)
       end
     end
+
+    kinetic_cafe_error_handle_post_error(error)
   end
 
   # Render the +error+ as HTML. Uses the template +kinetic_cafe_error/page+
@@ -99,6 +108,9 @@ module KineticCafe::ErrorHandler
     else
       render error.json_result
     end
+  end
+
+  def kinetic_cafe_error_handle_post_error(_error)
   end
 
   # Write the provided error to the Rails log using the value of
