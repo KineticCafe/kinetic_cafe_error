@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Austin Ziegler", "Jero Sutlovic"]
-  s.date = "2015-10-14"
+  s.date = "2015-10-23"
   s.description = "kinetic_cafe_error provides an API-smart error base class and a DSL for\ndefining errors. Under Rails, it also provides a controller concern\n(KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+\nto handle KineticCafe::Error types.\n\nExceptions in a hierarchy can be handled in a uniform manner, including getting\nan I18n translation message with parameters, standard status values, and\nmeaningful JSON representations that can be used to establish a standard error\nrepresentations across both clients and servers."
   s.email = ["aziegler@kineticcafe.com", "jsutlovic@kineticcafe.com"]
   s.extra_rdoc_files = ["Contributing.rdoc", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Contributing.rdoc", "History.rdoc", "Licence.rdoc", "README.rdoc"]
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.rdoc_options = ["--main", "README.rdoc"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
-  s.rubygems_version = "2.4.8"
+  s.rubygems_version = "2.4.5"
   s.summary = "kinetic_cafe_error provides an API-smart error base class and a DSL for defining errors"
 
   if s.respond_to? :specification_version then
@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rubocop>, ["~> 0.32"])
       s.add_development_dependency(%q<simplecov>, ["~> 0.7"])
       s.add_development_dependency(%q<coveralls>, ["~> 0.8"])
-      s.add_development_dependency(%q<hoe>, ["~> 3.13"])
+      s.add_development_dependency(%q<hoe>, ["~> 3.14"])
     else
       s.add_dependency(%q<minitest>, ["~> 5.8"])
       s.add_dependency(%q<rdoc>, ["~> 4.0"])
@@ -64,7 +64,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rubocop>, ["~> 0.32"])
       s.add_dependency(%q<simplecov>, ["~> 0.7"])
       s.add_dependency(%q<coveralls>, ["~> 0.8"])
-      s.add_dependency(%q<hoe>, ["~> 3.13"])
+      s.add_dependency(%q<hoe>, ["~> 3.14"])
     end
   else
     s.add_dependency(%q<minitest>, ["~> 5.8"])
@@ -86,6 +86,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rubocop>, ["~> 0.32"])
     s.add_dependency(%q<simplecov>, ["~> 0.7"])
     s.add_dependency(%q<coveralls>, ["~> 0.8"])
-    s.add_dependency(%q<hoe>, ["~> 3.13"])
+    s.add_dependency(%q<hoe>, ["~> 3.14"])
   end
 end

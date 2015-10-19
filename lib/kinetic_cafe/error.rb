@@ -176,6 +176,10 @@ module KineticCafe # :nodoc:
       defined?(Rack::Utils) && :bad_request || 400
     end
 
+    def default_severity
+      :error
+    end
+
     def stringify(object, namespace = nil)
       case object
       when Hash

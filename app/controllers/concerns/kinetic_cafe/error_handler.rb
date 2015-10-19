@@ -115,14 +115,19 @@ module KineticCafe::ErrorHandler
 
   # Write the provided error to the Rails log using the value of
   # #kinetic_cafe_error_handler_log_locale. If the error has a cause, log
-  # that as well.
+  # that as well. Rails.logger.class is expected to have constants matching
+  # error.severity.upcase, which is used to determine the numeric severity
+  # to log the error at.
   def kinetic_cafe_error_log_error(error)
     locale = self.class.kinetic_cafe_error_handler_log_locale
-    Rails.logger.error(error.message(locale))
+    severity = Rails.logger.class.const_get(error.severity.upcase)
+    Rails.logger.add(severity, nil, error.message(locale))
 
     return unless error.cause
 
-    Rails.logger.error(
+    Rails.logger.add(
+      severity,
+      nil,
       t(
         'kinetic_cafe_error.cause',
         message: error.cause.message,

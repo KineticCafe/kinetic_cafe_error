@@ -99,6 +99,11 @@ describe KineticCafe::ErrorDSL do
             assert_equal 400, instance.send(:default_status)
           end
         end
+
+        it 'returns :error for #default_severity (private)' do
+          refute base.private_instance_methods.include?(:default_severity)
+          assert_equal :error, instance.send(:default_severity)
+        end
       end
 
       describe 'class-based definition' do
@@ -137,6 +142,22 @@ describe KineticCafe::ErrorDSL do
               refute base.private_instance_methods.include?(:default_status)
               assert_equal 400, instance.send(:default_status)
             end
+          end
+
+          it 'returns :error for #default_severity (private)' do
+            refute base.private_instance_methods.include?(:default_severity)
+            assert_equal :error, instance.send(:default_severity)
+          end
+        end
+
+        describe 'with severity' do
+          let(:child) {
+            base.define_error class: :child, severity: :fatal
+          }
+
+          it 'returns :fatal for #default_severity (private)' do
+            refute base.private_instance_methods.include?(:default_severity)
+            assert_equal :fatal, instance.send(:default_severity)
           end
         end
 
