@@ -53,22 +53,25 @@ module KineticCafe
     # Define a new error as a subclass of the exception hosting ErrorDSL.
     # Options is a Hash supporting the following values:
     #
-    # +status+:: A number or Ruby symbol representing the HTTP status code
-    #            associated with this error. If not provided, defaults to
-    #            :bad_request. Must be provided if +class+ is provided. HTTP
-    #            status codes are defined in Rack::Utils.
-    # +key+::    The name of the error class to be created. Provide as a
-    #            snake_case value that will be turned into a camelized class
-    #            name. Mutually exclusive with +class+.
-    # +class+::  The name of the class the error is for. If present, +status+
-    #            must be provided to create a complete error class. That is,
+    # +status+::   A number or Ruby symbol representing the HTTP status code
+    #              associated with this error. If not provided, defaults to
+    #              :bad_request. Must be provided if +class+ is provided. HTTP
+    #              status codes are defined in Rack::Utils.
+    # +severity+:: A Ruby symbol representing the severity level associated
+    #              with this error. If not provided, defaults to :error. Error
+    #              severity levels are defined in Logger::Severity.
+    # +key+::      The name of the error class to be created. Provide as a
+    #              snake_case value that will be turned into a camelized class
+    #              name. Mutually exclusive with +class+.
+    # +class+::    The name of the class the error is for. If present, +status+
+    #              must be provided to create a complete error class. That is,
     #
-    #              define_error class: :object, status: :not_found
+    #                define_error class: :object, status: :not_found
     #
-    #            will create an +ObjectNotFound+ error class.
-    # +header+:: Indicates that when this is caught, it should not be returned
-    #            with full details, but should instead be treated as a
-    #            header-only API response. Also available as +header_only+.
+    #              will create an +ObjectNotFound+ error class.
+    # +header+::   Indicates that when this is caught, it should not be
+    #              returned with full details, but should instead be treated as
+    #              a header-only API response. Also available as +header_only+.
     # +internal+:: Generates a response that indicates to clients that the
     #              error should not be shown to users.
     # +i18n_params+:: An array of parameter names that are expected to be
@@ -80,6 +83,7 @@ module KineticCafe
 
       options = options.dup
       status = options[:status]
+      severity = options[:severity]
 
       klass = options.delete(:class)
       if klass
@@ -137,7 +141,11 @@ module KineticCafe
       status ||= defined?(Rack::Utils) && :bad_request || 400
       status.freeze
 
+      severity ||= :error
+      severity.freeze
+
       error.send :define_method, :default_status, -> { status } if status
+      error.send :define_method, :default_severity, -> { severity } if severity
       error.send :private, :default_status
 
       const_set(error_name, error)

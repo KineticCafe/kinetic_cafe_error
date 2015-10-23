@@ -7,7 +7,7 @@ describe KineticCafe::Error do
     it 'defaults correctly' do
       stub I18n, :translate, 'Untranslatable error' do
         expected = '#<KineticCafe::Error: name=error ' \
-          "status=bad_request message=\"Untranslatable error\" " \
+          'status=bad_request severity=error message="Untranslatable error" ' \
           'i18n_key=kcerrors.error i18n_params={} extra=nil cause=>'
         assert_equal expected, exception.inspect
       end
@@ -91,6 +91,7 @@ describe KineticCafe::Error do
       assert_equal(
         {
           status: :bad_request,
+          severity: :error,
           name: 'error',
           internal: false,
           i18n_key: 'kcerrors.error'
@@ -104,6 +105,7 @@ describe KineticCafe::Error do
         {
           error: {
             status: :bad_request,
+            severity: :error,
             name: 'error',
             internal: false,
             i18n_key: 'kcerrors.error'
@@ -121,6 +123,7 @@ describe KineticCafe::Error do
           json: {
             error: {
               status: :bad_request,
+              severity: :error,
               name: 'error',
               internal: false,
               i18n_key: 'kcerrors.error'

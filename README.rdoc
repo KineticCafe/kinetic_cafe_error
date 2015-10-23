@@ -65,6 +65,19 @@ automatically injected, which enables the following functionality:
   that can be provided with the kinetic_cafe_error_handler_log_locale helper
   method.
 
+  The error can be then captured for processing by providing the
+  kinetic_cafe_error_handle_post_error method.
+
+  Example for capturing KineticCafe::Errors with raven-ruby for Sentry:
+
+    ExampleController < ActionController
+      include KineticCafe::ErrorHandler
+
+      def kinetic_cafe_error_handle_post_error(error)
+        Raven.capture_exception(error)
+      end
+    end
+
 === Using with Minitest
 
 KineticCafe::Error provides a number of assertions that can help testing that
@@ -110,7 +123,7 @@ KineticCafe::Error provides four experimental matchers:
 
 Add kinetic_cafe_error to your Gemfile:
 
-  gem 'kinetic_cafe_error', '~> 1.7'
+  gem 'kinetic_cafe_error', '~> 1.8'
 
 If not using Rails, install with RubyGems:
 

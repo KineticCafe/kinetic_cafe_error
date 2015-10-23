@@ -6,6 +6,9 @@ module KineticCafe # :nodoc:
     # The HTTP status to be returned. If not provided in the constructor, uses
     # #default_status.
     attr_reader :status
+    # The severity to be returned. If not provided in the constructor, uses
+    # #default_severity
+    attr_reader :severity
     # Extra data relevant to recipients of the exception, provided on
     # construction.
     attr_reader :extra
@@ -39,6 +42,8 @@ module KineticCafe # :nodoc:
     #             value.
     # +status+::  An override to the HTTP status code to be returned by this
     #             error by default.
+    # +severity+:: An override to the default severity to be returned by this
+    #              error.
     # +i18n_params+:: The parameters to be sent to I18n.translate with the
     #                 #i18n_key.
     # +cause+:: The exception that caused this error. Used to wrap an earlier
@@ -69,6 +74,7 @@ module KineticCafe # :nodoc:
       @message && @message.freeze
 
       @status      = options.delete(:status) || default_status
+      @severity    = options.delete(:severity) || default_severity
       @i18n_params = options.delete(:i18n_params) || {}
       @extra       = options.delete(:extra)
 
@@ -147,6 +153,7 @@ module KineticCafe # :nodoc:
       {
         message:      @message,
         status:       status,
+        severity:     severity,
         name:         name,
         internal:     internal?,
         i18n_message: i18n_message,
@@ -174,9 +181,9 @@ module KineticCafe # :nodoc:
     # Nice debugging version of a KineticCafe::Error
     def inspect
       "#<#{self.class}: name=#{name} status=#{status} " \
-        "message=#{message.inspect} i18n_key=#{i18n_key} " \
-        "i18n_params=#{@i18n_params.inspect} extra=#{extra.inspect} " \
-        "cause=#{cause}>"
+        "severity=#{severity} message=#{message.inspect} " \
+        "i18n_key=#{i18n_key} i18n_params=#{@i18n_params.inspect} " \
+        "extra=#{extra.inspect} cause=#{cause}>"
     end
 
     private

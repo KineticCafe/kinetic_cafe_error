@@ -25,7 +25,7 @@ module KineticCafe # :nodoc:
   # rescue clause and handled there, as is shown in the included
   # KineticCafe::ErrorHandler controller concern for Rails.
   class Error < ::StandardError
-    VERSION = '1.7' # :nodoc:
+    VERSION = '1.8' # :nodoc:
 
     # Get the KineticCafe::Error functionality.
     include KineticCafe::ErrorModule
@@ -174,6 +174,10 @@ module KineticCafe # :nodoc:
 
     def default_status
       defined?(Rack::Utils) && :bad_request || 400
+    end
+
+    def default_severity
+      :error
     end
 
     def stringify(object, namespace = nil)

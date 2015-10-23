@@ -13,6 +13,7 @@ Hoe.plugin :email unless ENV['CI'] || ENV['TRAVIS']
 
 spec = Hoe.spec 'kinetic_cafe_error' do
   developer('Austin Ziegler', 'aziegler@kineticcafe.com')
+  developer('Jero Sutlovic', 'jsutlovic@kineticcafe.com')
 
   require_ruby_version '>= 1.9.2'
 
