@@ -91,6 +91,12 @@ describe KineticCafe::Error, '.hierarchy' do
         assert My < KineticCafe::ErrorModule
       end
 
+      it 'can handle a query parameter (issue #9)' do
+        expected = { query: "id: 1" }
+        actual = My.new(query: { id: 1 }).instance_variable_get(:@i18n_params)
+        assert_equal expected, actual
+      end
+
       it 'cannot be extended a second time' do
         ex = assert_raises do
           KineticCafe::Error.hierarchy(class: :My)
