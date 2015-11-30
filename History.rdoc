@@ -1,3 +1,15 @@
+=== 1.9 / 2015-11-30
+
+* 2 bug fixes:
+
+  * The #stringify method needed to be moved to KineticCafe::ErrorModule so
+    that hierarchies *not* built from KineticCafe::Error can properly use query
+    parameter parsing.
+
+  * kinetic_cafe_error has required Ruby 2.1 or higher since version 1.5
+    because of the inclusion of i18n-tasks as a dependency. This is now
+    reflected in the dependencies.
+
 === 1.8.1 / 2015-10-26
 
 * Re-release because 1.8 was yanked

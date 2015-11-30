@@ -200,6 +200,53 @@ module KineticCafe # :nodoc:
       @i18n_params.update(cause: @cause.message)
     end
 
+    def stringify(object, namespace = nil)
+      case object
+      when Hash
+        stringify_hash(object, namespace).compact.sort.join('; ')
+      when Array
+        stringify_array(object, namespace)
+      else
+        stringify_value(namespace, object)
+      end
+    end
+
+    def stringify_hash(hash, namespace)
+      hash.collect do |key, value|
+        key = namespace ? "#{namespace}[#{key}]" : key
+        case value
+        when Hash
+          next if value.nil?
+          stringify(value, key)
+        when Array
+          stringify_array(key, value)
+        else
+          stringify_value(key, value)
+        end
+      end
+    end
+
+    def stringify_array(key, array)
+      key = "#{key}[]"
+      if array.empty?
+        stringify_value(key, [])
+      else
+        array.collect { |value| stringify(value, key) }.join(', ')
+      end
+    end
+
+    def stringify_value(key, value)
+      "#{key}: #{value}"
+    end
+
+    def default_status
+      defined?(Rack::Utils) && :bad_request || 400
+    end
+
+    def default_severity
+      :error
+    end
+
     class << self
       ##
       # The base for I18n key resolution. Defaults to 'kcerrors'.

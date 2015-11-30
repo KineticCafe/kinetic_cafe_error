@@ -3,9 +3,6 @@ language: ruby
 rvm:
   - 2.2.2
   - 2.1.6
-  - 2.0.0
-  - 1.9.3
-  - jruby-1.7
   - jruby-9.0.0.0
   - jruby-head
   - ruby-head
@@ -28,10 +25,4 @@ before_script:
 script: rake travis
 after_script:
   - rake travis:after -t
-notifications:
-  email:
-    recipients:
-      - FIX@example.com
-    on_success: change
-    on_failure: always
 sudo: false

@@ -15,7 +15,7 @@ spec = Hoe.spec 'kinetic_cafe_error' do
   developer('Austin Ziegler', 'aziegler@kineticcafe.com')
   developer('Jero Sutlovic', 'jsutlovic@kineticcafe.com')
 
-  require_ruby_version '>= 1.9.2'
+  require_ruby_version '>= 2.1'
 
   self.history_file = 'History.rdoc'
   self.readme_file = 'README.rdoc'
