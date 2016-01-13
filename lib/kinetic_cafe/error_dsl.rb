@@ -103,6 +103,7 @@ module KineticCafe
       end
 
       key.tap do |k|
+        k.gsub!(/[^[:word:]]/, '_')
         k.squeeze!('_')
         k.gsub!(/^_+/, '')
         k.gsub!(/_+$/, '')
@@ -177,6 +178,8 @@ module KineticCafe
 
       if defined?(Rack::Utils) && rack_status
         Rack::Utils::SYMBOL_TO_STATUS_CODE.each_key do |name|
+          # Make the Rack names safe to use
+          name = name.to_s.gsub(/[^[:word:]]/, '_').squeeze('_').to_sym
           if rack_status.fetch(:methods, true)
             base.singleton_class.send :define_method, name do |options = {}|
               define_error(options.merge(status: name))

@@ -5,6 +5,7 @@
 .source_index
 .vagrant
 Gemfile.lock
+gemfiles/*.lock
 Vagrantfile
 coverage
 doc
@@ -13,3 +14,4 @@ pkg
 publish
 test/cache.tst
 tmp/
+.byebug_history

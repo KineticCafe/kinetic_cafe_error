@@ -104,6 +104,12 @@ describe KineticCafe::ErrorDSL do
           refute base.private_instance_methods.include?(:default_severity)
           assert_equal :error, instance.send(:default_severity)
         end
+
+        it 'strips non-word characters from a key' do
+          child = base.define_error key: :"child(ren)"
+          instance = child.new
+          assert_equal 'child_ren', instance.name
+        end
       end
 
       describe 'class-based definition' do
@@ -183,6 +189,11 @@ describe KineticCafe::ErrorDSL do
           it 'returns :not_found for #default_status (private)' do
             refute base.private_instance_methods.include?(:default_status)
             assert_equal :not_found, instance.send(:default_status)
+          end
+
+          it 'strips non-word characters from a key' do
+            base.define_error class: :"child(ren)", status: :not_found
+            assert base.const_defined?(:ChildRenNotFound)
           end
         end
 
@@ -278,6 +289,20 @@ describe KineticCafe::ErrorDSL do
 
       assert base.respond_to?(:not_found)
       refute base.const_defined?(:NotFound)
+    end
+
+    it 'protects against badly named Rack status symbols' do
+      begin
+        Rack::Utils::SYMBOL_TO_STATUS_CODE[:"another_(silly)_love_song"] = 999
+        base = Class.new(StandardError) do
+          extend KineticCafe::ErrorDSL
+        end
+        assert base.respond_to?(:another_silly_love_song)
+        assert base.const_defined?(:AnotherSillyLoveSong)
+      ensure
+        Rack::Utils::SYMBOL_TO_STATUS_CODE.delete(:"another_(silly)_love_song")
+        $debugme = false
+      end
     end
   end
 

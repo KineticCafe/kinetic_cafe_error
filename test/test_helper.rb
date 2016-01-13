@@ -9,6 +9,8 @@ require 'minitest-bonus-assertions'
 require 'rack/test'
 require 'kinetic_cafe_error'
 
+puts "Testing with Rack.release #{Rack.release}"
+
 unless defined? I18n.translate
   module I18n
     def self.translate(*)
