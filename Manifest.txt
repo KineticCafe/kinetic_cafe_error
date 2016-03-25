@@ -2,6 +2,7 @@
 .gemtest
 .rubocop.yml
 .travis.yml
+Appraisals
 Contributing.rdoc
 Gemfile
 History.rdoc
@@ -23,6 +24,8 @@ config/locales/kinetic_cafe_error.en-US.yml
 config/locales/kinetic_cafe_error.en.yml
 config/locales/kinetic_cafe_error.fr-CA.yml
 config/locales/kinetic_cafe_error.fr.yml
+gemfiles/rack_1.6.gemfile
+gemfiles/rack_2.gemfile
 lib/kinetic_cafe/error.rb
 lib/kinetic_cafe/error/minitest.rb
 lib/kinetic_cafe/error_dsl.rb

@@ -1,3 +1,13 @@
+=== 1.10 / 2016-03-25
+
+* 1 bug fix:
+
+  * Protect against names with punctuation in them.
+
+* 1 testing change:
+
+  * Add Appraisals to test against both Rack 1.6 and Rack 2.0.
+
 === 1.9 / 2015-11-30
 
 * 2 bug fixes:
