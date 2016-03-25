@@ -23,6 +23,7 @@ spec = Hoe.spec 'kinetic_cafe_error' do
 
   license 'MIT'
 
+  extra_dev_deps << ['appraisal', '~> 2.1']
   extra_dev_deps << ['hoe-doofus', '~> 1.0']
   extra_dev_deps << ['hoe-gemspec2', '~> 1.1']
   extra_dev_deps << ['hoe-git', '~> 1.6']

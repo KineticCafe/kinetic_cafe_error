@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: kinetic_cafe_error 1.9 ruby lib
+# stub: kinetic_cafe_error 1.10 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "kinetic_cafe_error"
-  s.version = "1.9"
+  s.version = "1.10"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Austin Ziegler", "Jero Sutlovic"]
-  s.date = "2015-11-29"
+  s.date = "2016-01-13"
   s.description = "kinetic_cafe_error provides an API-smart error base class and a DSL for\ndefining errors. Under Rails, it also provides a controller concern\n(KineticCafe::ErrorHandler) that has a useful implementation of +rescue_from+\nto handle KineticCafe::Error types.\n\nExceptions in a hierarchy can be handled in a uniform manner, including getting\nan I18n translation message with parameters, standard status values, and\nmeaningful JSON representations that can be used to establish a standard error\nrepresentations across both clients and servers."
   s.email = ["aziegler@kineticcafe.com", "jsutlovic@kineticcafe.com"]
   s.extra_rdoc_files = ["Contributing.rdoc", "History.rdoc", "Licence.rdoc", "Manifest.txt", "README.rdoc", "Contributing.rdoc", "History.rdoc", "Licence.rdoc", "README.rdoc"]
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/KineticCafe/kinetic_cafe_error/"
   s.licenses = ["MIT"]
   s.rdoc_options = ["--main", "README.rdoc"]
-  s.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
+  s.required_ruby_version = Gem::Requirement.new(">= 2.1")
   s.rubygems_version = "2.4.8"
   s.summary = "kinetic_cafe_error provides an API-smart error base class and a DSL for defining errors"
 
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<minitest>, ["~> 5.8"])
       s.add_development_dependency(%q<rdoc>, ["~> 4.0"])
+      s.add_development_dependency(%q<appraisal>, ["~> 2.1"])
       s.add_development_dependency(%q<hoe-doofus>, ["~> 1.0"])
       s.add_development_dependency(%q<hoe-gemspec2>, ["~> 1.1"])
       s.add_development_dependency(%q<hoe-git>, ["~> 1.6"])
@@ -47,6 +48,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<minitest>, ["~> 5.8"])
       s.add_dependency(%q<rdoc>, ["~> 4.0"])
+      s.add_dependency(%q<appraisal>, ["~> 2.1"])
       s.add_dependency(%q<hoe-doofus>, ["~> 1.0"])
       s.add_dependency(%q<hoe-gemspec2>, ["~> 1.1"])
       s.add_dependency(%q<hoe-git>, ["~> 1.6"])
@@ -69,6 +71,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<minitest>, ["~> 5.8"])
     s.add_dependency(%q<rdoc>, ["~> 4.0"])
+    s.add_dependency(%q<appraisal>, ["~> 2.1"])
     s.add_dependency(%q<hoe-doofus>, ["~> 1.0"])
     s.add_dependency(%q<hoe-gemspec2>, ["~> 1.1"])
     s.add_dependency(%q<hoe-git>, ["~> 1.6"])

@@ -1,19 +1,24 @@
 ---
 language: ruby
 rvm:
-  - 2.2.2
-  - 2.1.6
-  - jruby-9.0.0.0
+  - 2.3.0
+  - 2.2.4
+  - 2.1
+  - jruby-9.0.4.0
   - jruby-head
   - ruby-head
   - rbx-2
 matrix:
+  exclude:
+    - rvm: 2.1
+      gemfile: gemfiles/rack_2.gemfile
   allow_failures:
     - rvm: rbx-2
     - rvm: jruby-head
     - rvm: ruby-head
 gemfile:
-  - Gemfile
+  - gemfiles/rack_1.6.gemfile
+  - gemfiles/rack_2.gemfile
 before_script:
   - |
     case "${TRAVIS_RUBY_VERSION}" in
