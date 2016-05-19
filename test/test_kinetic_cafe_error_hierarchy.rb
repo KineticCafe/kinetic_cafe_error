@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 require 'rack/test'
 
@@ -92,7 +93,7 @@ describe KineticCafe::Error, '.hierarchy' do
       end
 
       it 'can handle a query parameter (issue #9)' do
-        expected = { query: "id: 1" }
+        expected = { query: 'id: 1' }
         actual = My.new(query: { id: 1 }).instance_variable_get(:@i18n_params)
         assert_equal expected, actual
       end

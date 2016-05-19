@@ -1,3 +1,4 @@
+# frozen_string_literal: false
 module KineticCafe
   # Make defining new children of KineticCafe::Error easy. Adds the
   # #define_error method.
@@ -17,7 +18,7 @@ module KineticCafe
         name.underscore.freeze
       else
         name.dup.tap { |n|
-          n.gsub!(/[[:upper:]]/) { "_#$&".downcase }
+          n.gsub!(/[[:upper:]]/) do "_#{$&}".downcase end
           n.sub!(/^_/, '')
         }.freeze
       end
@@ -46,7 +47,7 @@ module KineticCafe
       if name.respond_to?(:camelize)
         name.camelize.freeze
       else
-        "_#{name}".gsub(/_([a-z])/i) { $1.upcase }.freeze
+        "_#{name}".gsub(/_([a-z])/i) { Regexp.last_match(1).upcase }.freeze
       end
     end
 
@@ -87,9 +88,7 @@ module KineticCafe
 
       klass = options.delete(:class)
       if klass
-        if options.key?(:key)
-          fail ArgumentError, ":key conflicts with class:#{klass}"
-        end
+        fail ArgumentError, ":key conflicts with class:#{klass}" if options.key?(:key)
 
         key = if status.kind_of?(Symbol) || status.kind_of?(String)
                 "#{klass}_#{KineticCafe::ErrorDSL.namify(status)}"
@@ -112,8 +111,8 @@ module KineticCafe
 
       error_name = KineticCafe::ErrorDSL.camelize(key)
       i18n_key_base = respond_to?(:i18n_key_base) && self.i18n_key_base ||
-        'kcerrors'.freeze
-      i18n_key = "#{i18n_key_base}.#{key}".freeze
+        'kcerrors'
+      i18n_key = "#{i18n_key_base}.#{key}"
 
       if const_defined?(error_name)
         message = "key:#{key} already exists as #{error_name}"
@@ -151,8 +150,6 @@ module KineticCafe
 
       const_set(error_name, error)
     end
-
-    private
 
     ##
     def self.included(_mod)

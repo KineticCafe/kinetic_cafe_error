@@ -1,3 +1,16 @@
+=== 1.11 / 2016-05-20
+
+* 1 minor enhancement:
+
+  * If the controller instance does not respond to the 'respond_to' method, then we
+    want to default to rendering a JSON response.
+
+* 2 minor configuration changes:
+
+  * Add a .hoerc file so that we don't have errors on Travis CI.
+
+  * Add dependency_decisions.yml to whitelist dependencies by license.
+
 === 1.10 / 2016-03-25
 
 * 1 bug fix:

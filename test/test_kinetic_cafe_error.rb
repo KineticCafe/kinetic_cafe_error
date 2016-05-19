@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 describe KineticCafe::Error do
@@ -156,8 +157,7 @@ describe KineticCafe::Error do
           fail 'causing'
         rescue => ex
           @causing_exception = ex
-          raise KineticCafe::Error, cause: @causing_exception,
-            message: 'wrapping'
+          raise KineticCafe::Error, cause: @causing_exception, message: 'wrapping'
         end
       rescue => ex
         @wrapping_exception = ex

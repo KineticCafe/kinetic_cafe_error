@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 require 'rack/test'
 
@@ -262,9 +263,9 @@ describe KineticCafe::ErrorDSL do
 
   describe 'when Rack::Utils is defined' do
     it 'defines .not_found by default' do
-      base = Class.new(StandardError) do
+      base = Class.new(StandardError) {
         extend KineticCafe::ErrorDSL
-      end
+      }
       assert base.respond_to?(:not_found)
 
       child = base.not_found class: :child
@@ -272,20 +273,20 @@ describe KineticCafe::ErrorDSL do
     end
 
     it 'defines NotFound by default' do
-      base = Class.new(StandardError) do
+      base = Class.new(StandardError) {
         extend KineticCafe::ErrorDSL
-      end
+      }
       assert base.const_defined?(:NotFound)
     end
 
     it 'respects the method __rack_status if defined' do
-      base = Class.new(StandardError) do
+      base = Class.new(StandardError) {
         def self.__rack_status
           { methods: true, errors: false }
         end
 
         extend KineticCafe::ErrorDSL
-      end
+      }
 
       assert base.respond_to?(:not_found)
       refute base.const_defined?(:NotFound)
@@ -294,14 +295,13 @@ describe KineticCafe::ErrorDSL do
     it 'protects against badly named Rack status symbols' do
       begin
         Rack::Utils::SYMBOL_TO_STATUS_CODE[:"another_(silly)_love_song"] = 999
-        base = Class.new(StandardError) do
+        base = Class.new(StandardError) {
           extend KineticCafe::ErrorDSL
-        end
+        }
         assert base.respond_to?(:another_silly_love_song)
         assert base.const_defined?(:AnotherSillyLoveSong)
       ensure
         Rack::Utils::SYMBOL_TO_STATUS_CODE.delete(:"another_(silly)_love_song")
-        $debugme = false
       end
     end
   end
@@ -309,9 +309,9 @@ describe KineticCafe::ErrorDSL do
   describe 'when Rack::Utils is not defined' do
     it 'does not define .not_found' do
       Rack.stub_remove_const(:Utils) do
-        base = Class.new(StandardError) do
+        base = Class.new(StandardError) {
           extend KineticCafe::ErrorDSL
-        end
+        }
 
         refute base.respond_to?(:not_found)
       end
@@ -319,9 +319,9 @@ describe KineticCafe::ErrorDSL do
 
     it 'does not define NotFound' do
       Rack.stub_remove_const(:Utils) do
-        base = Class.new(StandardError) do
+        base = Class.new(StandardError) {
           extend KineticCafe::ErrorDSL
-        end
+        }
 
         refute base.const_defined?(:NotFound)
       end
@@ -329,13 +329,13 @@ describe KineticCafe::ErrorDSL do
 
     it 'ignores __rack_status if defined' do
       Rack.stub_remove_const(:Utils) do
-        base = Class.new(StandardError) do
+        base = Class.new(StandardError) {
           def self.__rack_status
             { methods: true, errors: false }
           end
 
           extend KineticCafe::ErrorDSL
-        end
+        }
 
         refute base.respond_to?(:not_found)
         refute base.const_defined?(:NotFound)

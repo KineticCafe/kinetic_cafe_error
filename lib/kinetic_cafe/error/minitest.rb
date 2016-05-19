@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Minitest #:nodoc:
   # Add assertions to Minitest for testing KineticCafe::Error objects.
   module KineticCafeErrorAssertions
@@ -20,8 +21,8 @@ module Minitest #:nodoc:
         actual = actual.dup
         actual.instance_variable_set(:@cause, nil)
         actual.instance_variable_set(:@initialized_cause, true)
-        actual.instance_variable_get(:@i18n_params).tap do |params|
-          params.delete(:cause)
+        actual.instance_variable_get(:@i18n_params).tap do |hash|
+          hash.delete(:cause)
         end
       end
 

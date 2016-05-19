@@ -59,4 +59,6 @@ Here's the most direct way to get your work merged into the project:
 
 === Contributors
 
-* Austin Ziegler created kinetic_cafe_error.
+* Austin Ziegler [@halostatue](https://github.com/halostatue) created kinetic_cafe_error.
+* Jero Sutlovic [@jsutlovic](https://github.com/jsutlovic)
+* Ravi Desai [@ravster](https://github.com/ravster)

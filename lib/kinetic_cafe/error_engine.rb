@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module KineticCafe
   # If Rails is defined, KineticCafe::ErrorEngine will be loaded automatically,
   # providing access to the KineticCafe::ErrorHandler.

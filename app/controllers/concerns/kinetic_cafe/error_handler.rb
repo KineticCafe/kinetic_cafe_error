@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'active_support/concern'
 
 # A controller concern for KineticCafe::Error that rescues from
@@ -71,13 +72,17 @@ module KineticCafe::ErrorHandler
 
     kinetic_cafe_error_log_error(error)
 
-    respond_to do |format|
-      format.html do
-        kinetic_cafe_error_render_html(error)
+    if respond_to?(:respond_to)
+      respond_to do |format|
+        format.html do
+          kinetic_cafe_error_render_html(error)
+        end
+        format.json do
+          kinetic_cafe_error_render_json(error)
+        end
       end
-      format.json do
-        kinetic_cafe_error_render_json(error)
-      end
+    else
+      kinetic_cafe_error_render_json(error)
     end
 
     kinetic_cafe_error_handle_post_error(error)
@@ -88,7 +93,7 @@ module KineticCafe::ErrorHandler
   # to <tt>error.status</tt>.
   def kinetic_cafe_error_render_html(error)
     render template: 'kinetic_cafe_error/page', locals: { error: error },
-      status: error.status
+           status: error.status
   end
 
   # Render the +error+ as JSON. If it is KineticCafe::Error#header_only?, only

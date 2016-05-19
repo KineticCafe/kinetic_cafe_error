@@ -1,22 +1,24 @@
+# frozen_string_literal: true
+
 module KineticCafe
-  module ErrorTasks
+  # Tasks to assist with managing kinetic_cafe_error classes in Rake.
+  module ErrorTasks #:nodoc:
     extend Rake::DSL
   end
 end
 
-module KineticCafe::ErrorTasks
+##
+module KineticCafe::ErrorTasks #:nodoc:
   require 'kinetic_cafe_error'
 
   namespace :kcerror do
     desc 'Show defined errors.'
     task :defined, [ :params ] => 'kcerror:find' do |_, args|
-      show_params = args.params =~ /^y/i
-
       display = ->(root, prefix: '', show_params: false) {
         line = "#{prefix}- #{root}"
 
         if !root.i18n_params.empty? && show_params
-          line << " (" << root.i18n_params.join(', ') << ")"
+          line << ' (' << root.i18n_params.join(', ') << ')'
         end
 
         puts line
@@ -33,6 +35,8 @@ module KineticCafe::ErrorTasks
           end
         end
       }
+
+      show_params = args.params =~ /^y/i
 
       if @descendants[StandardError]
         @descendants[StandardError].sort_by(&:to_s).each { |d|
@@ -53,9 +57,9 @@ module KineticCafe::ErrorTasks
         params = root.i18n_params.map { |param| "%{#{param}}" }.join(' ')
 
         if params.empty?
-          translation[name] = %Q(Translation for #{name} with no params.)
+          translation[name] = "Translation for #{name} with no params."
         else
-          translation[name] = %Q(Translation for #{name} with #{params}.)
+          translation[name] = "Translation for #{name} with #{params}."
         end
 
         if @descendants[root]
@@ -64,19 +68,19 @@ module KineticCafe::ErrorTasks
       }
 
       if @descendants[StandardError]
-        @descendants[StandardError].sort_by(&:to_s).each { |d| traverse.(d) }
+        @descendants[StandardError].sort_by(&:to_s).each do |d| traverse.(d) end
 
         # Normal YAML dump does not match the pattern that we want to compare
         # against. Therefore, we are going to write this file manually.
         text = 'kc:'
 
-        translations.keys.sort.each { |group|
+        translations.keys.sort.each do |group|
           text << "\n  #{group}:"
 
           translations[group].keys.sort.each { |k|
             text << "\n    #{k}: >-\n      #{translations[group][k]}"
           }
-        }
+        end
 
         if args.output
           File.open(args.output, 'w') { |f| f.puts text }
