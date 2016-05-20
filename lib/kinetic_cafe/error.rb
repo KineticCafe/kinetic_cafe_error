@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative 'error_module'
 
 module KineticCafe # :nodoc:
@@ -25,7 +26,7 @@ module KineticCafe # :nodoc:
   # rescue clause and handled there, as is shown in the included
   # KineticCafe::ErrorHandler controller concern for Rails.
   class Error < ::StandardError
-    VERSION = '1.10' # :nodoc:
+    VERSION = '1.11' # :nodoc:
 
     # Get the KineticCafe::Error functionality.
     include KineticCafe::ErrorModule

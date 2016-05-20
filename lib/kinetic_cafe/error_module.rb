@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module KineticCafe # :nodoc:
   # The core functionality provided by a KineticCafe::Error, extracted to a
   # module to ensure that exceptions that are made hosts of error hierarchies
@@ -83,7 +84,7 @@ module KineticCafe # :nodoc:
       initialize_cause(options.delete(:cause)) if options.key?(:cause)
 
       query = options.delete(:query)
-      @i18n_params.merge!(query: stringify(query)) if query
+      @i18n_params[:query] = stringify(query) if query
       @i18n_params.merge!(options)
     end
 
@@ -103,19 +104,17 @@ module KineticCafe # :nodoc:
       @i18n_key ||= if self.class.respond_to? :i18n_key
                       self.class.i18n_key
                     else
-                      [
-                        i18n_key_base, (name)
-                      ].join('.').freeze
+                      [ i18n_key_base, name ].join('.').freeze
                     end
     end
-    alias_method :code, :i18n_key
+    alias code i18n_key
 
     # Indicates that this error should *not* have its details rendered to the
     # user, but should use the +head+ method.
     def header?
       false
     end
-    alias_method :header_only?, :header?
+    alias header_only? header?
 
     # Indicates that this error should be rendered to the client, but clients
     # are advised *not* to display the message to the user.
@@ -163,7 +162,7 @@ module KineticCafe # :nodoc:
         extra:        extra
       }.delete_if { |_, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
     end
-    alias_method :as_json, :api_error
+    alias as_json api_error
 
     # An error result that can be passed as a response body.
     def error_result
@@ -176,7 +175,7 @@ module KineticCafe # :nodoc:
     def json_result
       { status: status, json: error_result, layout: false }
     end
-    alias_method :render_json_for_rails, :json_result
+    alias render_json_for_rails json_result
 
     # Nice debugging version of a KineticCafe::Error
     def inspect
@@ -191,9 +190,7 @@ module KineticCafe # :nodoc:
     def initialize_cause(cause)
       return if cause.nil?
 
-      unless cause.kind_of? Exception
-        fail ArgumentError, 'cause must be an Exception'
-      end
+      fail ArgumentError, 'cause must be an Exception' unless cause.kind_of? Exception
 
       @initialized_cause = true
       @cause = cause
@@ -212,7 +209,7 @@ module KineticCafe # :nodoc:
     end
 
     def stringify_hash(hash, namespace)
-      hash.collect do |key, value|
+      hash.map do |key, value|
         key = namespace ? "#{namespace}[#{key}]" : key
         case value
         when Hash
@@ -231,7 +228,7 @@ module KineticCafe # :nodoc:
       if array.empty?
         stringify_value(key, [])
       else
-        array.collect { |value| stringify(value, key) }.join(', ')
+        array.map { |value| stringify(value, key) }.join(', ')
       end
     end
 
@@ -268,7 +265,7 @@ module KineticCafe # :nodoc:
       ##
       def included(mod)
         default_singleton_method mod, :i18n_key_base do
-          'kcerrors'.freeze
+          'kcerrors'
         end
 
         default_singleton_method mod, :i18n_params do
