@@ -1,27 +1,29 @@
-# -*- ruby encoding: utf-8 -*-
+# frozen_string_literal: true
 
 require 'rubygems'
 require 'hoe'
 require 'rake/clean'
 
 Hoe.plugin :doofus
+Hoe.plugin :email unless ENV['CI'] || ENV['TRAVIS']
 Hoe.plugin :gemspec2
 Hoe.plugin :git
 Hoe.plugin :minitest
+Hoe.plugin :rubygems
 Hoe.plugin :travis
-Hoe.plugin :email unless ENV['CI'] || ENV['TRAVIS']
 
 spec = Hoe.spec 'kinetic_cafe_error' do
   developer('Austin Ziegler', 'aziegler@kineticcafe.com')
   developer('Jero Sutlovic', 'jsutlovic@kineticcafe.com')
+  developer('Ravi Desai', 'rdesai@kineticcafe.com')
 
-  require_ruby_version '>= 2.1'
-
-  self.history_file = 'History.rdoc'
+  self.history_file = 'History.md'
   self.readme_file = 'README.rdoc'
-  self.extra_rdoc_files = FileList['*.rdoc'].to_a
 
   license 'MIT'
+
+  ruby21!
+
 
   extra_dev_deps << ['appraisal', '~> 2.1']
   extra_dev_deps << ['hoe-doofus', '~> 1.0']
@@ -36,7 +38,7 @@ spec = Hoe.spec 'kinetic_cafe_error' do
   extra_dev_deps << ['minitest-moar', '~> 0.0']
   extra_dev_deps << ['minitest-stub-const', '~> 0.4']
   extra_dev_deps << ['rack-test', '~> 0.6']
-  extra_dev_deps << ['rake', '~> 10.0']
+  extra_dev_deps << ['rake', '>= 10.0', '< 12']
   extra_dev_deps << ['i18n-tasks', '~> 0.8']
   extra_dev_deps << ['i18n-tasks-csv', '~> 1.0']
   extra_dev_deps << ['rubocop', '~> 0.32']
@@ -44,27 +46,31 @@ spec = Hoe.spec 'kinetic_cafe_error' do
   extra_dev_deps << ['coveralls', '~> 0.8']
 end
 
-namespace :test do
-  task :coverage do
-    spec.test_prelude = [
-      'require "simplecov"',
-      'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
-      'gem "minitest"'
-    ].join('; ')
-    Rake::Task['test'].execute
-  end
+ENV['RUBYOPT'] = '-W0'
 
-  task :coveralls do
-    spec.test_prelude = [
-      'require "psych"',
-      'require "simplecov"',
-      'require "coveralls"',
-      'SimpleCov.formatter = Coveralls::SimpleCov::Formatter',
-      'SimpleCov.start("test_frameworks") { command_name "Minitest" }',
-      'gem "minitest"'
-    ].join('; ')
-    Rake::Task['test'].execute
+module Hoe::Publish #:nodoc:
+  alias __make_rdoc_cmd__errhead__ make_rdoc_cmd
+
+  def make_rdoc_cmd(*extra_args) # :nodoc:
+    spec.extra_rdoc_files.delete_if { |f| f == 'Manifest.txt' }
+    __make_rdoc_cmd__errhead__(*extra_args)
   end
 end
 
-# vim: syntax=ruby
+namespace :test do
+  if File.exist?('.simplecov-prelude.rb')
+    task :coverage do
+      spec.test_prelude = 'load ".simplecov-prelude.rb"'
+      Rake::Task['test'].execute
+    end
+  end
+
+  task :coveralls do
+    ENV['coveralls'] = '1'
+    Rake::Task['test:coverage'].execute
+  end
+
+  CLOBBER << 'coverage'
+end
+
+CLOBBER << 'tmp'

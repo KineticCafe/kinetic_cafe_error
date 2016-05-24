@@ -1,12 +1,12 @@
 ---
 exclude: !ruby/regexp '/
-  \.(tmp|swp)$
+  \.(tmp|swp|csv)$
   |
   \.(?:autotest|gemtest|gitignore|hoerc|minitest.rb|simplecov-prelude.rb)
   |
   CVS\/
   |
-  ^TAGS
+  ^(?i:TAGS)
   |
   \.(?:
       DS_Store|
@@ -31,8 +31,4 @@ exclude: !ruby/regexp '/
   \.gemspec
   |
   Vagrantfile
-  |
-  dependency_decisions.yml
-  |
-  \.csv$
   /x'
