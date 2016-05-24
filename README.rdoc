@@ -133,5 +133,10 @@ And require where needed in your application:
 
   require 'kinetic_cafe_error'
 
-:include: Contributing.rdoc
-:include: Licence.rdoc
+== Community and Contributing
+
+kinetic_cafe_error welcomes your contributions as described in
+{Contributing.md}[https://github.com/KineticCafe/kinetic_cafe_error/blob/master/Contributing.md].
+This project, like all Kinetic Cafe {open source
+projects}[https://github.com/KineticCafe], is under the Kinetic Cafe Open
+Source {Code of Conduct}[https://github.com/KineticCafe/code-of-conduct].
