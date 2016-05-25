@@ -101,9 +101,9 @@ describe KineticCafe::ErrorDSL do
           end
         end
 
-        it 'returns :error for #default_severity (private)' do
+        it 'returns :warn for #default_severity (private)' do
           refute base.private_instance_methods.include?(:default_severity)
-          assert_equal :error, instance.send(:default_severity)
+          assert_equal :warn, instance.send(:default_severity)
         end
 
         it 'strips non-word characters from a key' do
@@ -151,9 +151,9 @@ describe KineticCafe::ErrorDSL do
             end
           end
 
-          it 'returns :error for #default_severity (private)' do
+          it 'returns :warn for #default_severity (private)' do
             refute base.private_instance_methods.include?(:default_severity)
-            assert_equal :error, instance.send(:default_severity)
+            assert_equal :warn, instance.send(:default_severity)
           end
         end
 

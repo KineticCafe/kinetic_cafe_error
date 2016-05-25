@@ -59,7 +59,7 @@ module KineticCafe
     #              :bad_request. Must be provided if +class+ is provided. HTTP
     #              status codes are defined in Rack::Utils.
     # +severity+:: A Ruby symbol representing the severity level associated
-    #              with this error. If not provided, defaults to :error. Error
+    #              with this error. If not provided, defaults to :warn. Error
     #              severity levels are defined in Logger::Severity.
     # +key+::      The name of the error class to be created. Provide as a
     #              snake_case value that will be turned into a camelized class
@@ -141,8 +141,7 @@ module KineticCafe
       status ||= defined?(Rack::Utils) && :bad_request || 400
       status.freeze
 
-      severity ||= :error
-      severity.freeze
+      severity ||= :warn
 
       error.send :define_method, :default_status, -> { status } if status
       error.send :define_method, :default_severity, -> { severity } if severity
