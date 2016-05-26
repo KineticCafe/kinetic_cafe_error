@@ -36,6 +36,34 @@ describe KineticCafe::ErrorDSL do
       assert base.respond_to?(:define_error)
     end
 
+    describe '#severity' do
+      describe 'fails when' do
+        it 'is not passed a block' do
+          ex = assert_raises RuntimeError do
+            base.severity(:foo)
+          end
+
+          assert_match(/must have a block/, ex.message)
+        end
+      end
+
+      it 'creates any errors in its block with the given severity, then reverts to old severity' do
+        severity = :test_level
+
+        base.severity(severity) do
+          not_found key: :foo
+          not_found key: :bar
+        end
+
+        assert_equal severity, base::Foo.default_severity
+        assert_equal severity, base::Bar.default_severity
+
+        base.define_error key: :child
+
+        refute_equal severity, base::Child.default_severity
+      end
+    end
+
     describe '#define_error' do
       describe 'fails when' do
         it 'given bad options' do
@@ -110,6 +138,18 @@ describe KineticCafe::ErrorDSL do
           child = base.define_error key: :"child(ren)"
           instance = child.new
           assert_equal 'child_ren', instance.name
+        end
+      end
+
+      describe 'when nested definitions' do
+        it 'creates a nested error' do
+          base.define_error(key: :child) do
+            not_found key: :foo
+          end
+
+          assert base::Child::Foo < base::Child
+
+          assert base::Child::Foo.respond_to?(:default_severity)
         end
       end
 

@@ -1,3 +1,28 @@
+### 1.12 / 2016-05-27
+
+*   4 major enhancements:
+
+    *   Replace the use of ObjectSpace with a custom system to get a list of the
+        children of StandardError. This makes the provided rake tasks compatible
+        with JRuby.
+
+    *   Refactor rake tasks into methods and add tests for those methods.
+
+    *   Errors can now be declared in a severity block where their default_severity
+        will be different from the default of :error.
+
+    *   Error-declarations can accept a block with other error-declaratons in them,
+        allowing for nested error hierarchies.
+
+*   1 bug fix:
+
+    *   Use String#new when we need mutable strings.
+
+*   1 minor enhancement:
+
+    *   If the controller instance does not respond to the 'respond_to' method,
+        then we default to rendering a JSON response.
+
 ### 1.11 / 2016-05-24
 
 *   1 minor enhancement:
