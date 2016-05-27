@@ -1,7 +1,9 @@
-# frozen_string_literal: false
+# frozen_string_literal: true
+
+##
 module KineticCafe
   # Make defining new children of KineticCafe::Error easy. Adds the
-  # #define_error method.
+  # #define_error method and #severity block modifier.
   #
   # If using when Rack is present, useful variant methodss are provided
   # matching Rack status symbol codes. These set the default status to the Rack
@@ -78,7 +80,10 @@ module KineticCafe
     # +i18n_params+:: An array of parameter names that are expected to be
     #                 provided for translation. This helps document the
     #                 expected translations.
-    def define_error(options)
+    #
+    # If a +block+ is provided, errors may be defined as subclasses of the error
+    # defined here.
+    def define_error(options, &block)
       fail ArgumentError, 'invalid options' unless options.kind_of?(Hash)
       fail ArgumentError, 'define what error?' if options.empty?
 
@@ -91,10 +96,12 @@ module KineticCafe
         fail ArgumentError, ":key conflicts with class:#{klass}" if options.key?(:key)
 
         key = if status.kind_of?(Symbol) || status.kind_of?(String)
-                "#{klass}_#{KineticCafe::ErrorDSL.namify(status)}"
-              else
-                "#{klass}_#{KineticCafe::ErrorDSL.namify(name)}"
-              end
+          "#{klass}_#{KineticCafe::ErrorDSL.namify(status)}"
+        else
+          "#{klass}_#{KineticCafe::ErrorDSL.namify(name)}"
+        end
+
+        key = String.new(key)
       else
         key = options.fetch(:key) {
           fail ArgumentError, 'one of :key or :class must be provided'
@@ -115,7 +122,7 @@ module KineticCafe
       i18n_key = "#{i18n_key_base}.#{key}"
 
       if const_defined?(error_name)
-        message = "key:#{key} already exists as #{error_name}"
+        message = String.new("key:#{key} already exists as #{error_name}")
         message << " with class:#{klass}" if klass
         fail ArgumentError, message
       end
@@ -141,26 +148,51 @@ module KineticCafe
       status ||= defined?(Rack::Utils) && :bad_request || 400
       status.freeze
 
-      severity ||= :error
+      if status
+        error.send :define_method, :default_status, -> { status }
+        error.send :private, :default_status
+        error.send :define_singleton_method, :default_status, -> { status }
+      end
+
+      severity ||= @severity || :error
       severity.freeze
 
-      error.send :define_method, :default_status, -> { status } if status
-      error.send :define_method, :default_severity, -> { severity } if severity
-      error.send :private, :default_status
+      if severity
+        error.send :define_method, :default_severity, -> { severity }
+        error.send :define_singleton_method, :default_severity, -> { severity }
+      end
+
+      error.instance_exec(&block) if block
 
       const_set(error_name, error)
     end
 
-    ##
-    def self.included(_mod)
+    # Temporarily override the default severity with +value+ for errors defined in
+    # the provided +block+.
+    def severity(value, &block)
+      old_severity, @severity = @severity, value
+      fail 'Severity must have a block' unless block
+      instance_exec(&block)
+    ensure
+      @severity = old_severity
+    end
+
+    # Keep track of subclasses of errors using ErrorDSL.
+    def inherited(subclass) #:nodoc:
+      super
+      KineticCafe::ErrorDSL.inheritors << subclass
+    end
+
+    def self.included(_mod) # :nodoc:
       fail "#{self} cannot be included"
     end
 
-    ##
-    def self.extended(base)
+    def self.extended(base) # :nodoc:
       unless base < ::StandardError
         fail "#{self} cannot extend #{base} (not a StandardError)"
       end
+
+      inheritors << base
 
       rack_status = base.__rack_status if base.respond_to?(:__rack_status)
 
@@ -178,8 +210,8 @@ module KineticCafe
           # Make the Rack names safe to use
           name = name.to_s.gsub(/[^[:word:]]/, '_').squeeze('_').to_sym
           if rack_status.fetch(:methods, true)
-            base.singleton_class.send :define_method, name do |options = {}|
-              define_error(options.merge(status: name))
+            base.singleton_class.send :define_method, name do |options = {}, &block|
+              define_error(options.merge(status: name), &block)
             end
           end
 
@@ -188,6 +220,10 @@ module KineticCafe
           end
         end
       end
+    end
+
+    def self.inheritors # :nodoc:
+      @inheritors ||= []
     end
   end
 end

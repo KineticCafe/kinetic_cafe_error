@@ -8,6 +8,7 @@ require 'minitest/moar'
 require 'minitest/stub_const'
 require 'minitest-bonus-assertions'
 require 'rack/test'
+require 'yaml'
 require 'kinetic_cafe_error'
 
 puts "Testing with Rack.release #{Rack.release}"

@@ -84,6 +84,10 @@ describe KineticCafe::Error, '.hierarchy' do
         KineticCafe::Error.hierarchy(class: My)
       end
 
+      it 'does not subclass KineticCafe::Error' do
+        refute My < KineticCafe::Error
+      end
+
       it 'has been extended with KineticCafe::ErrorDSL' do
         assert My.singleton_class < KineticCafe::ErrorDSL
       end
